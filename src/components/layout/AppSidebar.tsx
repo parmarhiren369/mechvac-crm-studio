@@ -82,6 +82,39 @@ const settingsItems: MenuItem[] = [
   },
   { title: "Roles", icon: Shield, path: "/settings/roles" },
   { title: "Workspaces", icon: Briefcase, path: "/settings/workspaces" },
+  {
+    title: "Leads Settings",
+    icon: Users,
+    children: [
+      { title: "Lead Sources", path: "/settings/leads/sources" },
+      { title: "Lead Status", path: "/settings/leads/status" },
+    ],
+  },
+  {
+    title: "Fields",
+    icon: FileText,
+    children: [
+      { title: "Custom Fields", path: "/settings/fields/custom" },
+      { title: "Field Groups", path: "/settings/fields/groups" },
+    ],
+  },
+  {
+    title: "Inspection Reports",
+    icon: CheckSquare,
+    children: [
+      { title: "Templates", path: "/settings/inspection/templates" },
+      { title: "Checklists", path: "/settings/inspection/checklists" },
+    ],
+  },
+  {
+    title: "Localization",
+    icon: Briefcase,
+    children: [
+      { title: "Languages", path: "/settings/localization/languages" },
+      { title: "Currency", path: "/settings/localization/currency" },
+      { title: "Date Format", path: "/settings/localization/date-format" },
+    ],
+  },
 ];
 
 interface SidebarItemProps {
