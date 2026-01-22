@@ -39,15 +39,14 @@ const ProductsPage = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Total Products", value: "156", icon: Package, color: "from-primary to-primary/80" },
-          { label: "Categories", value: "12", icon: Layers, color: "from-blue-500 to-blue-600" },
-          { label: "Low Stock Items", value: "8", icon: Tag, color: "from-amber-500 to-amber-600" },
-          { label: "Total Value", value: "₹4.2Cr", icon: IndianRupee, color: "from-emerald-500 to-emerald-600" },
+          { label: "Total Products", value: "156", icon: Package, color: "primary" },
+          { label: "Categories", value: "12", icon: Layers, color: "blue-500" },
+          { label: "Low Stock Items", value: "8", icon: Tag, color: "amber-500" },
+          { label: "Total Value", value: "₹4.2Cr", icon: IndianRupee, color: "emerald-500" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-[0.06] group-hover:opacity-[0.12] transition-opacity`} />
             <CardContent className="p-5 relative flex items-center gap-4">
-              <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
+              <div className={`h-12 w-12 rounded-xl bg-${stat.color} flex items-center justify-center shadow-lg`}>
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -82,7 +81,7 @@ const ProductsPage = () => {
             className="shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in group overflow-hidden"
             style={{ animationDelay: `${index * 60}ms` }}
           >
-            <div className="h-32 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center group-hover:from-primary/10 group-hover:to-primary/5 transition-all duration-300">
+            <div className="h-32 bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-all duration-300">
               <Package className="h-16 w-16 text-muted-foreground/30 group-hover:text-primary/40 group-hover:scale-110 transition-all duration-300" />
             </div>
             <CardContent className="p-4">

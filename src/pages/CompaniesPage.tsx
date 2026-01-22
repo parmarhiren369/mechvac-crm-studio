@@ -61,12 +61,11 @@ const CompaniesPage = () => {
             className="shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in group overflow-hidden"
             style={{ animationDelay: `${index * 80}ms` }}
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12 ring-2 ring-primary/10">
-                    <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-white font-bold text-lg">
+                    <AvatarFallback className="bg-primary text-white font-bold text-lg">
                       {company.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>

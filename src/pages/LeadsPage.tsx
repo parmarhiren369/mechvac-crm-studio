@@ -133,7 +133,7 @@ const LeadsPage = () => {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 ring-2 ring-primary/10">
-                        <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-white font-semibold">
+                        <AvatarFallback className="bg-primary text-white font-semibold">
                           {lead.name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>

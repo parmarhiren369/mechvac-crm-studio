@@ -7,7 +7,6 @@ interface StatCard {
   change: string;
   changeType: "positive" | "negative" | "neutral";
   icon: React.ComponentType<{ className?: string }>;
-  gradient: string;
   iconBg: string;
 }
 
@@ -18,8 +17,7 @@ const stats: StatCard[] = [
     change: "+12.5%",
     changeType: "positive",
     icon: Users,
-    gradient: "from-cyan-500 to-teal-600",
-    iconBg: "bg-gradient-to-br from-cyan-500 to-teal-600",
+    iconBg: "bg-cyan-500",
   },
   {
     title: "Quotations",
@@ -27,8 +25,7 @@ const stats: StatCard[] = [
     change: "+8.2%",
     changeType: "positive",
     icon: FileText,
-    gradient: "from-amber-500 to-orange-600",
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+    iconBg: "bg-amber-500",
   },
   {
     title: "Orders",
@@ -36,8 +33,7 @@ const stats: StatCard[] = [
     change: "+23.1%",
     changeType: "positive",
     icon: ShoppingCart,
-    gradient: "from-emerald-500 to-green-600",
-    iconBg: "bg-gradient-to-br from-emerald-500 to-green-600",
+    iconBg: "bg-emerald-500",
   },
   {
     title: "Revenue",
@@ -45,8 +41,7 @@ const stats: StatCard[] = [
     change: "+15.3%",
     changeType: "positive",
     icon: TrendingUp,
-    gradient: "from-blue-500 to-indigo-600",
-    iconBg: "bg-gradient-to-br from-blue-500 to-indigo-600",
+    iconBg: "bg-blue-500",
   },
 ];
 
@@ -59,9 +54,6 @@ export const StatsCards = () => {
           className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-slide-up group hover:-translate-y-1"
           style={{ animationDelay: `${index * 100}ms` }}
         >
-          {/* Gradient background overlay */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-5 group-hover:opacity-10 transition-opacity`}></div>
-          
           <CardContent className="p-6 relative">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
@@ -91,9 +83,6 @@ export const StatsCards = () => {
               <span className="text-xs text-muted-foreground">from last month</span>
             </div>
           </CardContent>
-
-          {/* Decorative corner element */}
-          <div className={`absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-gradient-to-br ${stat.gradient} opacity-10 group-hover:opacity-20 transition-opacity blur-2xl`}></div>
         </Card>
       ))}
     </div>

@@ -13,7 +13,7 @@ export const DashboardLayout = ({ children, title, breadcrumb = [] }: DashboardL
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 mesh-gradient-bg">
+    <div className="min-h-screen bg-slate-50">
       <AppSidebar 
         isCollapsed={isSidebarCollapsed} 
         onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
@@ -31,10 +31,10 @@ export const DashboardLayout = ({ children, title, breadcrumb = [] }: DashboardL
           {/* Enhanced Page header */}
           <div className="flex items-center justify-between mb-8 animate-slide-up">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
                 {title}
               </h1>
-              <div className="h-1 w-20 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-full"></div>
+              <div className="h-1 w-20 bg-cyan-500 rounded-full"></div>
             </div>
             <Breadcrumb items={[{ label: title }]} />
           </div>

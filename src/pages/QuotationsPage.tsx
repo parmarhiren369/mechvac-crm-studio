@@ -45,13 +45,12 @@ const QuotationsPage = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Total Quotations", value: "1,234", change: "+12%", icon: FileText, color: "from-primary to-primary/70" },
-          { label: "Approved", value: "456", change: "+8%", icon: CheckCircle, color: "from-emerald-500 to-emerald-600" },
-          { label: "Pending", value: "289", change: "-3%", icon: Clock, color: "from-amber-500 to-amber-600" },
-          { label: "Total Value", value: "₹2.4Cr", change: "+18%", icon: FileText, color: "from-blue-500 to-blue-600" },
+          { label: "Total Quotations", value: "1,234", change: "+12%", icon: FileText, color: "primary" },
+          { label: "Approved", value: "456", change: "+8%", icon: CheckCircle, color: "emerald-500" },
+          { label: "Pending", value: "289", change: "-3%", icon: Clock, color: "amber-500" },
+          { label: "Total Value", value: "₹2.4Cr", change: "+18%", icon: FileText, color: "blue-500" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${stat.color} opacity-10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500`} />
             <CardContent className="p-5 relative">
               <div className="flex items-center justify-between">
                 <div>
@@ -59,7 +58,7 @@ const QuotationsPage = () => {
                   <p className="text-3xl font-bold mt-1">{stat.value}</p>
                   <p className="text-xs text-emerald-500 mt-1">{stat.change} this month</p>
                 </div>
-                <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
+                <div className={`h-12 w-12 rounded-xl bg-${stat.color} flex items-center justify-center shadow-lg`}>
                   <stat.icon className="h-6 w-6 text-white" />
                 </div>
               </div>

@@ -72,7 +72,6 @@ const CalendarPage = () => {
                   className={`relative p-4 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-x-1 animate-fade-in overflow-hidden group`}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} opacity-50 group-hover:opacity-100 transition-opacity`} />
                   <div className="relative flex items-start gap-4">
                     <div className={`h-12 w-12 rounded-xl ${config.color} flex items-center justify-center flex-shrink-0`}>
                       <config.icon className="h-5 w-5" />

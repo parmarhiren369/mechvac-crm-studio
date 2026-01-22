@@ -14,11 +14,10 @@ const events: Event[] = [];
 export const UpcomingEvents = () => {
   return (
     <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-0 animate-slide-up overflow-hidden">
-      {/* Gradient header accent */}
-      <div className="h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+      <div className="h-1 bg-blue-500"></div>
       <CardHeader className="pb-4 pt-5">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+          <div className="h-2 w-2 rounded-full bg-blue-500"></div>
           Upcoming Events
         </CardTitle>
       </CardHeader>
@@ -26,7 +25,6 @@ export const UpcomingEvents = () => {
         {events.length === 0 ? (
           <div className="text-center py-8">
             <div className="relative inline-block">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-full blur-xl"></div>
               <Calendar className="relative h-16 w-16 text-blue-500/60 mx-auto mb-4" />
             </div>
             <p className="text-lg font-semibold text-foreground">

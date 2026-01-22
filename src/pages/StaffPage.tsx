@@ -41,15 +41,14 @@ const StaffPage = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Total Staff", value: "24", color: "from-primary to-primary/80" },
-          { label: "Active", value: "20", color: "from-emerald-500 to-emerald-600" },
-          { label: "On Leave", value: "3", color: "from-amber-500 to-amber-600" },
-          { label: "Departments", value: "5", color: "from-blue-500 to-blue-600" },
+          { label: "Total Staff", value: "24", color: "primary" },
+          { label: "Active", value: "20", color: "emerald-500" },
+          { label: "On Leave", value: "3", color: "amber-500" },
+          { label: "Departments", value: "5", color: "blue-500" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-[0.06] group-hover:opacity-[0.12] transition-opacity`} />
             <CardContent className="p-5 relative flex items-center gap-4">
-              <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
+              <div className={`h-12 w-12 rounded-xl bg-${stat.color} flex items-center justify-center shadow-lg`}>
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -79,11 +78,11 @@ const StaffPage = () => {
             className="shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in group overflow-hidden"
             style={{ animationDelay: `${index * 60}ms` }}
           >
-            <div className="h-16 bg-gradient-to-r from-secondary via-secondary/90 to-secondary/80" />
+            <div className="h-16 bg-secondary" />
             <CardContent className="pt-0 relative">
               <div className="flex justify-between items-start -mt-8">
                 <Avatar className="h-16 w-16 ring-4 ring-background shadow-lg">
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-white font-bold text-xl">
+                  <AvatarFallback className="bg-primary text-white font-bold text-xl">
                     {staff.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>

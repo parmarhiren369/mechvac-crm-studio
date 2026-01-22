@@ -57,13 +57,12 @@ const TasksPage = () => {
       {/* Task Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Total Tasks", value: "48", color: "from-primary to-primary/80" },
-          { label: "Completed", value: "23", color: "from-emerald-500 to-emerald-600" },
-          { label: "In Progress", value: "15", color: "from-blue-500 to-blue-600" },
-          { label: "Overdue", value: "5", color: "from-destructive to-destructive/80" },
+          { label: "Total Tasks", value: "48", color: "primary" },
+          { label: "Completed", value: "23", color: "emerald-500" },
+          { label: "In Progress", value: "15", color: "blue-500" },
+          { label: "Overdue", value: "5", color: "destructive" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-[0.06] group-hover:opacity-[0.12] transition-opacity`} />
             <CardContent className="p-5 relative">
               <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
               <p className="text-3xl font-bold mt-1">{stat.value}</p>

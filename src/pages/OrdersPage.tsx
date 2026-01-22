@@ -49,17 +49,16 @@ const OrdersPage = () => {
       {/* Order Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {[
-          { label: "Total Orders", value: "567", icon: Package, gradient: "from-primary via-primary to-primary/80" },
-          { label: "Delivered", value: "342", icon: CheckCircle2, gradient: "from-emerald-500 via-emerald-500 to-emerald-600" },
-          { label: "In Transit", value: "89", icon: Truck, gradient: "from-blue-500 via-blue-500 to-blue-600" },
-          { label: "Processing", value: "78", icon: Package, gradient: "from-amber-500 via-amber-500 to-amber-600" },
-          { label: "Pending", value: "58", icon: Clock, gradient: "from-slate-500 via-slate-500 to-slate-600" },
+          { label: "Total Orders", value: "567", icon: Package, color: "primary" },
+          { label: "Delivered", value: "342", icon: CheckCircle2, color: "emerald-500" },
+          { label: "In Transit", value: "89", icon: Truck, color: "blue-500" },
+          { label: "Processing", value: "78", icon: Package, color: "amber-500" },
+          { label: "Pending", value: "58", icon: Clock, color: "slate-500" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0">
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-[0.08] group-hover:opacity-[0.15] transition-opacity`} />
             <CardContent className="p-4 relative">
               <div className="flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg`}>
+                <div className={`h-10 w-10 rounded-lg bg-${stat.color} flex items-center justify-center shadow-lg`}>
                   <stat.icon className="h-5 w-5 text-white" />
                 </div>
                 <div>

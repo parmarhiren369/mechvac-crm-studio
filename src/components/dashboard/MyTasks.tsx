@@ -14,14 +14,13 @@ const tasks: Task[] = [];
 export const MyTasks = () => {
   return (
     <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-0 animate-slide-up h-full overflow-hidden">
-      {/* Gradient header accent */}
-      <div className="h-1 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500"></div>
+      <div className="h-1 bg-emerald-500"></div>
       <CardHeader className="pb-4 pt-5 flex flex-row items-center justify-between">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-gradient-to-r from-emerald-500 to-green-600"></div>
+          <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
           My Tasks
         </CardTitle>
-        <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white gap-1.5 shadow-lg shadow-emerald-500/30 rounded-xl transition-all hover:scale-105">
+        <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5 shadow-lg rounded-xl transition-all hover:scale-105">
           <Plus className="h-4 w-4" />
           Create
         </Button>
@@ -30,7 +29,6 @@ export const MyTasks = () => {
         {tasks.length === 0 ? (
           <div className="text-center py-8">
             <div className="relative inline-block">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-full blur-xl"></div>
               <CheckCircle2 className="relative h-16 w-16 text-emerald-500/60 mx-auto mb-4" />
             </div>
             <p className="text-lg font-semibold text-foreground mb-1">

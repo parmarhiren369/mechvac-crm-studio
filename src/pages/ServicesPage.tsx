@@ -46,15 +46,14 @@ const ServicesPage = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Total Requests", value: "89", icon: Wrench, color: "from-primary to-primary/80" },
-          { label: "Completed", value: "52", icon: CheckCircle2, color: "from-emerald-500 to-emerald-600" },
-          { label: "In Progress", value: "18", icon: Clock, color: "from-blue-500 to-blue-600" },
-          { label: "Pending", value: "19", icon: AlertTriangle, color: "from-amber-500 to-amber-600" },
+          { label: "Total Requests", value: "89", icon: Wrench, color: "primary" },
+          { label: "Completed", value: "52", icon: CheckCircle2, color: "emerald-500" },
+          { label: "In Progress", value: "18", icon: Clock, color: "blue-500" },
+          { label: "Pending", value: "19", icon: AlertTriangle, color: "amber-500" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-[0.06] group-hover:opacity-[0.12] transition-opacity`} />
             <CardContent className="p-5 relative flex items-center gap-4">
-              <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
+              <div className={`h-12 w-12 rounded-xl bg-${stat.color} flex items-center justify-center shadow-lg`}>
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -85,7 +84,7 @@ const ServicesPage = () => {
               >
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className={`h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0`}>
+                    <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
                       <Wrench className="h-6 w-6 text-white" />
                     </div>
                     <div>

@@ -137,8 +137,8 @@ const SidebarItem = ({ item, isCollapsed }: SidebarItemProps) => {
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
             "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-            "text-sidebar-foreground hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-teal-500/10 hover:text-cyan-400 hover:shadow-md",
-            isActive && "bg-gradient-to-r from-cyan-500/20 to-teal-500/20 text-cyan-400 shadow-lg shadow-cyan-500/20"
+            "text-sidebar-foreground hover:bg-cyan-500/10 hover:text-cyan-400 hover:shadow-md",
+            isActive && "bg-cyan-500/20 text-cyan-400 shadow-lg"
           )}
         >
           <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -163,7 +163,7 @@ const SidebarItem = ({ item, isCollapsed }: SidebarItemProps) => {
                   cn(
                     "block px-3 py-2 rounded-lg text-sm transition-all duration-200 relative",
                     "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-cyan-400 hover:pl-4",
-                    isActive && "bg-gradient-to-r from-cyan-500 to-teal-600 text-white shadow-lg shadow-cyan-500/30"
+                    isActive && "bg-cyan-500 text-white shadow-lg"
                   )
                 }
               >
@@ -182,8 +182,8 @@ const SidebarItem = ({ item, isCollapsed }: SidebarItemProps) => {
       className={({ isActive }) =>
         cn(
           "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
-          "text-sidebar-foreground hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-teal-500/10 hover:text-cyan-400 hover:shadow-md",
-          isActive && "bg-gradient-to-r from-cyan-500 to-teal-600 text-white shadow-lg shadow-cyan-500/30"
+          "text-sidebar-foreground hover:bg-cyan-500/10 hover:text-cyan-400 hover:shadow-md",
+          isActive && "bg-cyan-500 text-white shadow-lg"
         )
       }
     >
@@ -202,17 +202,14 @@ export const AppSidebar = ({ isCollapsed, onToggle }: AppSidebarProps) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen bg-gradient-to-b from-[hsl(222,47%,11%)] via-[hsl(222,47%,9%)] to-[hsl(222,47%,7%)] border-r border-sidebar-border/50 transition-all duration-300 z-50 shadow-2xl",
+        "fixed left-0 top-0 h-screen bg-[hsl(222,47%,10%)] border-r border-sidebar-border/50 transition-all duration-300 z-50 shadow-2xl",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
-      {/* Decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-amber-500/5 pointer-events-none"></div>
       
       {/* Logo with enhanced styling */}
       <div className="relative flex items-center gap-3 px-4 h-16 border-b border-sidebar-border/50 backdrop-blur-sm">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg blur-md opacity-50"></div>
           <img
             src={mechvacLogo}
             alt="Mechvac Technologies"
@@ -221,7 +218,7 @@ export const AppSidebar = ({ isCollapsed, onToggle }: AppSidebarProps) => {
         </div>
         {!isCollapsed && (
           <div className="flex flex-col">
-            <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
+            <span className="text-lg font-bold text-cyan-400">
               MECHVAC
             </span>
             <span className="text-[10px] text-sidebar-foreground/60 tracking-widest">TECHNOLOGIES</span>
@@ -235,9 +232,9 @@ export const AppSidebar = ({ isCollapsed, onToggle }: AppSidebarProps) => {
           <div className="mb-3">
             {!isCollapsed && (
               <span className="px-3 text-xs font-bold text-sidebar-foreground/40 uppercase tracking-wider flex items-center gap-2">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sidebar-foreground/20 to-transparent"></div>
+                <div className="h-px flex-1 bg-sidebar-foreground/20"></div>
                 Menu
-                <div className="h-px flex-1 bg-gradient-to-r from-sidebar-foreground/20 via-transparent to-transparent"></div>
+                <div className="h-px flex-1 bg-sidebar-foreground/20"></div>
               </span>
             )}
           </div>
@@ -250,9 +247,9 @@ export const AppSidebar = ({ isCollapsed, onToggle }: AppSidebarProps) => {
           <div className="mt-8 mb-3">
             {!isCollapsed && (
               <span className="px-3 text-xs font-bold text-sidebar-foreground/40 uppercase tracking-wider flex items-center gap-2">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sidebar-foreground/20 to-transparent"></div>
+                <div className="h-px flex-1 bg-sidebar-foreground/20"></div>
                 Settings
-                <div className="h-px flex-1 bg-gradient-to-r from-sidebar-foreground/20 via-transparent to-transparent"></div>
+                <div className="h-px flex-1 bg-sidebar-foreground/20"></div>
               </span>
             )}
           </div>
@@ -265,7 +262,6 @@ export const AppSidebar = ({ isCollapsed, onToggle }: AppSidebarProps) => {
 
         {/* Enhanced Footer */}
         <div className="relative p-4 border-t border-sidebar-border/50 backdrop-blur-sm">
-          <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-transparent pointer-events-none"></div>
           {!isCollapsed && (
             <div className="relative text-center">
               <p className="text-xs text-sidebar-foreground/60 font-medium">

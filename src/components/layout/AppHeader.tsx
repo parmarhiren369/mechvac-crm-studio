@@ -78,7 +78,7 @@ export const AppHeader = ({ onMenuToggle, breadcrumb = [] }: AppHeaderProps) => 
           className="relative text-muted-foreground hover:text-foreground hover:bg-primary/10 rounded-xl transition-all"
         >
           <Bell className="h-5 w-5" />
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs border-2 border-card shadow-lg animate-pulse">
+          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-amber-500 text-white text-xs border-2 border-card shadow-lg animate-pulse">
             21
           </Badge>
           <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 animate-ping opacity-75"></span>
@@ -87,10 +87,9 @@ export const AppHeader = ({ onMenuToggle, breadcrumb = [] }: AppHeaderProps) => 
         {/* User profile with gradient border */}
         <div className="flex items-center gap-3 ml-2 pl-4 border-l border-border/50">
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-full opacity-75 group-hover:opacity-100 blur transition-all duration-300"></div>
             <Avatar className="relative h-9 w-9 ring-2 ring-background">
               <AvatarImage src="" />
-              <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-teal-600 text-white font-semibold text-sm">
+              <AvatarFallback className="bg-cyan-500 text-white font-semibold text-sm">
                 AD
               </AvatarFallback>
             </Avatar>
