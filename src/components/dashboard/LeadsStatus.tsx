@@ -75,9 +75,14 @@ const getStatusColor = (status: Lead["status"]) => {
 
 export const LeadsStatus = () => {
   return (
-    <Card className="shadow-card animate-fade-in">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold">Leads Status</CardTitle>
+    <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-0 animate-slide-up overflow-hidden">
+      {/* Gradient header accent */}
+      <div className="h-1 bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500"></div>
+      <CardHeader className="pb-4 pt-5">
+        <CardTitle className="text-xl font-bold flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-600"></div>
+          Leads Status
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -93,17 +98,17 @@ export const LeadsStatus = () => {
             {leads.map((lead, index) => (
               <TableRow 
                 key={lead.id} 
-                className="hover:bg-muted/50 transition-colors"
+                className="hover:bg-gradient-to-r hover:from-cyan-50/50 hover:to-transparent transition-all duration-200 group cursor-pointer border-b border-border/50 last:border-0"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <TableCell className="py-4">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-muted text-muted-foreground text-xs">
+                    <Avatar className="h-8 w-8 ring-2 ring-background group-hover:ring-cyan-200 transition-all">
+                      <AvatarFallback className="bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700 text-xs font-semibold">
                         {lead.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-primary font-medium hover:underline cursor-pointer">
+                    <span className="text-foreground font-medium group-hover:text-cyan-600 transition-colors">
                       {lead.name}
                     </span>
                   </div>
