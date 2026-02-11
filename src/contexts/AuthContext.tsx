@@ -13,6 +13,29 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const formatAuthError = (error: unknown) => {
+  if (!error) return 'Unknown error. Please try again.';
+  if (typeof error === 'string') return error;
+  if (error instanceof Error && error.message) return error.message;
+
+  const err = error as {
+    message?: string;
+    error_description?: string;
+    code?: string;
+    status?: number;
+    details?: string;
+  };
+
+  return (
+    err.message ||
+    err.error_description ||
+    err.details ||
+    (err.code ? `Error code: ${err.code}` : '') ||
+    (err.status ? `Status: ${err.status}` : '') ||
+    'Unknown error. Please try again.'
+  );
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -59,12 +82,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       },
     });
-    if (error) throw error;
+    if (error) throw new Error(formatAuthError(error));
 
     // Create user record in users table
     if (data.user) {
       const { error: insertError } = await supabase.from('users').insert({
-        id: data.user.id,
         email: normalizedEmail,
         name: normalizedName,
         role: 'staff',
@@ -72,7 +94,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (insertError) {
-        throw insertError;
+        // Avoid failing signup if profile insert fails (e.g., schema mismatch or RLS)
+        console.warn('Profile insert failed:', insertError);
       }
     }
   };

@@ -42,6 +42,8 @@ export default function SignupPage() {
     } catch (error: any) {
       const message =
         error?.message ||
+        error?.error_description ||
+        error?.details ||
         (typeof error === 'string' ? error : '') ||
         (error ? JSON.stringify(error) : '') ||
         'Failed to create account';
