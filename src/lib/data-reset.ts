@@ -1,5 +1,3 @@
-import { supabase } from "@/lib/supabase";
-
 const tablesToClear = [
   "calendar_events",
   "clients",
@@ -26,16 +24,16 @@ const tablesToClear = [
 export const getTablesToClear = () => [...tablesToClear];
 
 export async function clearAllData() {
-  const results: { table: string; error?: string }[] = [];
+  const response = await fetch("/api/clear-data", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
 
-  for (const table of tablesToClear) {
-    const { error } = await supabase.from(table).delete().neq("id", 0);
-    if (error) {
-      results.push({ table, error: error.message });
-    } else {
-      results.push({ table });
-    }
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Failed to clear data");
   }
 
-  return results;
+  const payload = await response.json();
+  return payload.results as { table: string; error?: string }[];
 }

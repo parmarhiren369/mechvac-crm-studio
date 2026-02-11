@@ -1,5 +1,6 @@
 import { Users, FileText, ShoppingCart, TrendingUp, ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLeads, useQuotations, useOrders } from "@/hooks/use-database";
 
 interface StatCard {
   title: string;
@@ -10,42 +11,101 @@ interface StatCard {
   iconBg: string;
 }
 
-const stats: StatCard[] = [
-  {
-    title: "Total Leads",
-    value: "2,847",
-    change: "+12.5%",
-    changeType: "positive",
-    icon: Users,
-    iconBg: "bg-cyan-500",
-  },
-  {
-    title: "Quotations",
-    value: "1,234",
-    change: "+8.2%",
-    changeType: "positive",
-    icon: FileText,
-    iconBg: "bg-amber-500",
-  },
-  {
-    title: "Orders",
-    value: "567",
-    change: "+23.1%",
-    changeType: "positive",
-    icon: ShoppingCart,
-    iconBg: "bg-emerald-500",
-  },
-  {
-    title: "Revenue",
-    value: "₹45.2L",
-    change: "+15.3%",
-    changeType: "positive",
-    icon: TrendingUp,
-    iconBg: "bg-blue-500",
-  },
-];
-
 export const StatsCards = () => {
+  const { data: leads } = useLeads();
+  const { data: quotations } = useQuotations();
+  const { data: orders } = useOrders();
+
+  const now = Date.now();
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+  const startCurrent = now - thirtyDays;
+  const startPrevious = now - 2 * thirtyDays;
+
+  const parseDate = (value?: string) => (value ? new Date(value).getTime() : 0);
+
+  const countInRange = (items?: { created_at?: string }[], start = 0, end = 0) =>
+    items?.filter((item) => {
+      const ts = parseDate(item.created_at);
+      return ts >= start && ts < end;
+    }).length ?? 0;
+
+  const changeFor = (current: number, previous: number) => {
+    if (previous <= 0) {
+      return { change: "—", changeType: "neutral" as const };
+    }
+    const diff = ((current - previous) / previous) * 100;
+    const sign = diff >= 0 ? "+" : "";
+    return {
+      change: `${sign}${diff.toFixed(1)}%`,
+      changeType: diff >= 0 ? "positive" : "negative",
+    } as const;
+  };
+
+  const leadTotal = leads?.length ?? 0;
+  const leadCurrent = countInRange(leads, startCurrent, now);
+  const leadPrevious = countInRange(leads, startPrevious, startCurrent);
+
+  const quotationTotal = quotations?.length ?? 0;
+  const quotationCurrent = countInRange(quotations, startCurrent, now);
+  const quotationPrevious = countInRange(quotations, startPrevious, startCurrent);
+
+  const orderTotal = orders?.length ?? 0;
+  const orderCurrent = countInRange(orders, startCurrent, now);
+  const orderPrevious = countInRange(orders, startPrevious, startCurrent);
+
+  const revenueTotal =
+    orders?.reduce(
+      (sum, order) => sum + (order.total_amount ?? order.amount ?? 0),
+      0
+    ) ?? 0;
+
+  const revenueCurrent =
+    orders?.filter((order) => {
+      const ts = parseDate(order.created_at);
+      return ts >= startCurrent && ts < now;
+    }).reduce((sum, order) => sum + (order.total_amount ?? order.amount ?? 0), 0) ?? 0;
+
+  const revenuePrevious =
+    orders?.filter((order) => {
+      const ts = parseDate(order.created_at);
+      return ts >= startPrevious && ts < startCurrent;
+    }).reduce((sum, order) => sum + (order.total_amount ?? order.amount ?? 0), 0) ?? 0;
+
+  const stats: StatCard[] = [
+    {
+      title: "Total Leads",
+      value: leadTotal.toLocaleString(),
+      ...changeFor(leadCurrent, leadPrevious),
+      icon: Users,
+      iconBg: "bg-cyan-500",
+    },
+    {
+      title: "Quotations",
+      value: quotationTotal.toLocaleString(),
+      ...changeFor(quotationCurrent, quotationPrevious),
+      icon: FileText,
+      iconBg: "bg-amber-500",
+    },
+    {
+      title: "Orders",
+      value: orderTotal.toLocaleString(),
+      ...changeFor(orderCurrent, orderPrevious),
+      icon: ShoppingCart,
+      iconBg: "bg-emerald-500",
+    },
+    {
+      title: "Revenue",
+      value: revenueTotal.toLocaleString("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      }),
+      ...changeFor(revenueCurrent, revenuePrevious),
+      icon: TrendingUp,
+      iconBg: "bg-blue-500",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       {stats.map((stat, index) => (
