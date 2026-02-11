@@ -1,121 +1,218 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Building2, MapPin, Phone, Mail, Globe, MoreHorizontal } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useClients, useCreateClient, useDeleteClient } from "@/hooks/use-database";
+import { toast } from "sonner";
 
-interface Company {
-  id: string;
-  name: string;
-  industry: string;
-  location: string;
-  phone: string;
-  email: string;
-  website: string;
-  employees: string;
-  revenue: string;
-  status: "Active" | "Inactive" | "Prospect";
-}
-
-const companies: Company[] = [
-  { id: "1", name: "Tech Corp Pvt Ltd", industry: "Technology", location: "Mumbai, Maharashtra", phone: "+91 22 2345 6789", email: "info@techcorp.com", website: "techcorp.com", employees: "500+", revenue: "₹50Cr+", status: "Active" },
-  { id: "2", name: "Global Industries", industry: "Manufacturing", location: "Pune, Maharashtra", phone: "+91 20 3456 7890", email: "contact@global.com", website: "globalind.com", employees: "1000+", revenue: "₹100Cr+", status: "Active" },
-  { id: "3", name: "Prime Solutions", industry: "Services", location: "Bangalore, Karnataka", phone: "+91 80 4567 8901", email: "hello@prime.com", website: "primesol.com", employees: "200+", revenue: "₹25Cr+", status: "Prospect" },
-  { id: "4", name: "Apex Ltd", industry: "Engineering", location: "Chennai, Tamil Nadu", phone: "+91 44 5678 9012", email: "info@apex.com", website: "apexltd.com", employees: "750+", revenue: "₹75Cr+", status: "Active" },
-  { id: "5", name: "InnoTech Solutions", industry: "Technology", location: "Hyderabad, Telangana", phone: "+91 40 6789 0123", email: "team@innotech.com", website: "innotech.com", employees: "300+", revenue: "₹35Cr+", status: "Inactive" },
-];
-
-const getStatusColor = (status: Company["status"]) => {
-  switch (status) {
-    case "Active": return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
-    case "Inactive": return "bg-muted text-muted-foreground border-muted";
-    default: return "bg-amber-500/10 text-amber-600 border-amber-500/20";
+const getStatusColor = (status?: string) => {
+  switch ((status || "").toLowerCase()) {
+    case "active":
+      return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
+    case "inactive":
+      return "bg-muted text-muted-foreground border-muted";
+    default:
+      return "bg-amber-500/10 text-amber-600 border-amber-500/20";
   }
 };
 
 const CompaniesPage = () => {
+  const { data: clients, isLoading } = useClients();
+  const createClient = useCreateClient();
+  const deleteClient = useDeleteClient();
+
+  const [search, setSearch] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company_name: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    website: "",
+    status: "active",
+  });
+
+  const filtered = (clients ?? []).filter((c) =>
+    (c.name || "").toLowerCase().includes(search.toLowerCase()) ||
+    (c.company_name || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleCreate = async () => {
+    if (!formData.name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+    try {
+      await createClient.mutateAsync({
+        name: formData.name.trim(),
+        email: formData.email || undefined,
+        phone: formData.phone || undefined,
+        company_name: formData.company_name || undefined,
+        address: formData.address || undefined,
+        city: formData.city || undefined,
+        state: formData.state || undefined,
+        country: formData.country || undefined,
+        website: formData.website || undefined,
+        status: formData.status,
+      });
+      toast.success("Company added");
+      setIsCreateOpen(false);
+      setFormData({ name: "", email: "", phone: "", company_name: "", address: "", city: "", state: "", country: "", website: "", status: "active" });
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to add company");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this company?")) return;
+    try {
+      await deleteClient.mutateAsync(id);
+      toast.success("Company deleted");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete company");
+    }
+  };
+
   return (
     <DashboardLayout title="Companies">
-      {/* Header */}
       <Card className="shadow-card mb-6">
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search companies..." className="pl-10" />
+              <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search companies..." className="pl-10" />
             </div>
-            <Button className="bg-primary hover:bg-primary/90 gap-2">
+            <Button className="bg-primary hover:bg-primary/90 gap-2" onClick={() => setIsCreateOpen(true)}>
               <Plus className="h-4 w-4" /> Add Company
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Companies Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {companies.map((company, index) => (
-          <Card 
-            key={company.id} 
-            className="shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in group overflow-hidden"
-            style={{ animationDelay: `${index * 80}ms` }}
-          >
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12 ring-2 ring-primary/10">
-                    <AvatarFallback className="bg-primary text-white font-bold text-lg">
-                      {company.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors cursor-pointer">{company.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{company.industry}</p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span>{company.location}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>{company.phone}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="h-4 w-4 flex-shrink-0" />
-                <span>{company.email}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Globe className="h-4 w-4 flex-shrink-0" />
-                <span className="text-primary hover:underline cursor-pointer">{company.website}</span>
-              </div>
-              
-              <div className="pt-3 border-t border-border flex items-center justify-between">
-                <div className="flex gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Employees</p>
-                    <p className="font-semibold">{company.employees}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Revenue</p>
-                    <p className="font-semibold">{company.revenue}</p>
-                  </div>
-                </div>
-                <Badge variant="outline" className={getStatusColor(company.status)}>
-                  {company.status}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card className="shadow-card">
+        <CardHeader>
+          <CardTitle>Companies</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Company</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow><TableCell colSpan={6} className="text-center py-6">Loading...</TableCell></TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow><TableCell colSpan={6} className="text-center py-6">No companies.</TableCell></TableRow>
+              ) : (
+                filtered.map((company) => (
+                  <TableRow key={company.id}>
+                    <TableCell className="font-medium">{company.name}</TableCell>
+                    <TableCell>{company.company_name || "—"}</TableCell>
+                    <TableCell>{company.email || "—"}</TableCell>
+                    <TableCell>{company.phone || "—"}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={getStatusColor(company.status)}>
+                        {company.status || "active"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(company.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Company</DialogTitle>
+            <DialogDescription>Create a company record.</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Company</Label>
+              <Input value={formData.company_name} onChange={(e) => setFormData({ ...formData, company_name: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Phone</Label>
+              <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+            </div>
+            <div className="space-y-2 col-span-2">
+              <Label>Address</Label>
+              <Input value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>City</Label>
+              <Input value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>State</Label>
+              <Input value={formData.state} onChange={(e) => setFormData({ ...formData, state: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Country</Label>
+              <Input value={formData.country} onChange={(e) => setFormData({ ...formData, country: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Website</Label>
+              <Input value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Input value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={createClient.isPending}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };

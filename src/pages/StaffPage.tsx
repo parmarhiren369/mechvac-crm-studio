@@ -1,50 +1,100 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, Mail, Phone, MapPin, MoreHorizontal, Users } from "lucide-react";
+import { Plus, Users, Trash2 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useUsers, useCreateUser, useDeleteUser } from "@/hooks/use-database";
+import { toast } from "sonner";
 
-interface Staff {
-  id: string;
-  name: string;
-  role: string;
-  department: string;
-  email: string;
-  phone: string;
-  location: string;
-  status: "Active" | "On Leave" | "Inactive";
-  leadsAssigned: number;
-  tasksCompleted: number;
-}
-
-const staffMembers: Staff[] = [
-  { id: "1", name: "Ms. Bhargesha Patel", role: "Sales Manager", department: "Sales", email: "bhargesha@mechvac.com", phone: "+91 98765 43210", location: "Mumbai", status: "Active", leadsAssigned: 45, tasksCompleted: 128 },
-  { id: "2", name: "Mr. Jigar Shah", role: "Senior Sales Executive", department: "Sales", email: "jigar@mechvac.com", phone: "+91 87654 32109", location: "Mumbai", status: "Active", leadsAssigned: 38, tasksCompleted: 95 },
-  { id: "3", name: "Ms. Priya Sharma", role: "Sales Executive", department: "Sales", email: "priya@mechvac.com", phone: "+91 76543 21098", location: "Pune", status: "On Leave", leadsAssigned: 22, tasksCompleted: 67 },
-  { id: "4", name: "Mr. Amit Kumar", role: "Technical Specialist", department: "Technical", email: "amit@mechvac.com", phone: "+91 65432 10987", location: "Bangalore", status: "Active", leadsAssigned: 15, tasksCompleted: 82 },
-  { id: "5", name: "Ms. Neha Gupta", role: "Customer Support", department: "Support", email: "neha@mechvac.com", phone: "+91 54321 09876", location: "Mumbai", status: "Active", leadsAssigned: 0, tasksCompleted: 156 },
-  { id: "6", name: "Mr. Rahul Verma", role: "Sales Executive", department: "Sales", email: "rahul@mechvac.com", phone: "+91 43210 98765", location: "Delhi", status: "Inactive", leadsAssigned: 0, tasksCompleted: 43 },
-];
-
-const getStatusColor = (status: Staff["status"]) => {
-  switch (status) {
-    case "Active": return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
-    case "On Leave": return "bg-amber-500/10 text-amber-600 border-amber-500/20";
-    default: return "bg-muted text-muted-foreground border-muted";
+const getStatusColor = (status?: string) => {
+  switch ((status || "").toLowerCase()) {
+    case "active":
+      return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
+    case "on leave":
+      return "bg-amber-500/10 text-amber-600 border-amber-500/20";
+    default:
+      return "bg-muted text-muted-foreground border-muted";
   }
 };
 
 const StaffPage = () => {
+  const { data: users, isLoading } = useUsers();
+  const createUser = useCreateUser();
+  const deleteUser = useDeleteUser();
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    role: "",
+    department: "",
+    status: "active",
+  });
+
+  const handleCreate = async () => {
+    if (!formData.name.trim() || !formData.email.trim()) {
+      toast.error("Name and email are required");
+      return;
+    }
+    try {
+      await createUser.mutateAsync({
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone || undefined,
+        role: formData.role || undefined,
+        department: formData.department || undefined,
+        status: formData.status,
+      });
+      toast.success("Staff added");
+      setIsCreateOpen(false);
+      setFormData({ name: "", email: "", phone: "", role: "", department: "", status: "active" });
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to add staff");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this staff member?")) return;
+    try {
+      await deleteUser.mutateAsync(id);
+      toast.success("Staff deleted");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete staff");
+    }
+  };
+
+  const total = users?.length ?? 0;
+  const active = users?.filter((u) => (u.status || "").toLowerCase() === "active").length ?? 0;
+  const onLeave = users?.filter((u) => (u.status || "").toLowerCase() === "on leave").length ?? 0;
+
   return (
     <DashboardLayout title="Staff">
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Total Staff", value: "24", color: "primary" },
-          { label: "Active", value: "20", color: "emerald-500" },
-          { label: "On Leave", value: "3", color: "amber-500" },
-          { label: "Departments", value: "5", color: "blue-500" },
+          { label: "Total Staff", value: total, color: "primary" },
+          { label: "Active", value: active, color: "emerald-500" },
+          { label: "On Leave", value: onLeave, color: "amber-500" },
+          { label: "Departments", value: 0, color: "blue-500" },
         ].map((stat, i) => (
           <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-5 relative flex items-center gap-4">
@@ -60,77 +110,95 @@ const StaffPage = () => {
         ))}
       </div>
 
-      {/* Header */}
-      <Card className="shadow-card mb-6">
-        <CardContent className="p-4 flex items-center justify-between">
+      <Card className="shadow-card">
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl">Team Members</CardTitle>
-          <Button className="bg-primary hover:bg-primary/90 gap-2">
+          <Button className="bg-primary hover:bg-primary/90 gap-2" onClick={() => setIsCreateOpen(true)}>
             <Plus className="h-4 w-4" /> Add Staff
           </Button>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Department</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow><TableCell colSpan={7} className="text-center py-6">Loading...</TableCell></TableRow>
+              ) : (users ?? []).length === 0 ? (
+                <TableRow><TableCell colSpan={7} className="text-center py-6">No staff yet.</TableCell></TableRow>
+              ) : (
+                (users ?? []).map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.phone || "—"}</TableCell>
+                    <TableCell>{user.role || "—"}</TableCell>
+                    <TableCell>{user.department || "—"}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={getStatusColor(user.status)}>
+                        {user.status || "active"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(user.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
-      {/* Staff Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {staffMembers.map((staff, index) => (
-          <Card 
-            key={staff.id} 
-            className="shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in group overflow-hidden"
-            style={{ animationDelay: `${index * 60}ms` }}
-          >
-            <div className="h-16 bg-secondary" />
-            <CardContent className="pt-0 relative">
-              <div className="flex justify-between items-start -mt-8">
-                <Avatar className="h-16 w-16 ring-4 ring-background shadow-lg">
-                  <AvatarFallback className="bg-primary text-white font-bold text-xl">
-                    {staff.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground mt-10">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              <div className="mt-3">
-                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{staff.name}</h3>
-                <p className="text-sm text-primary">{staff.role}</p>
-                <p className="text-sm text-muted-foreground">{staff.department}</p>
-              </div>
-
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Mail className="h-4 w-4" />
-                  <span>{staff.email}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  <span>{staff.phone}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  <span>{staff.location}</span>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
-                <div className="flex gap-4 text-sm">
-                  <div className="text-center">
-                    <p className="font-bold text-foreground">{staff.leadsAssigned}</p>
-                    <p className="text-xs text-muted-foreground">Leads</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-foreground">{staff.tasksCompleted}</p>
-                    <p className="text-xs text-muted-foreground">Tasks</p>
-                  </div>
-                </div>
-                <Badge variant="outline" className={getStatusColor(staff.status)}>
-                  {staff.status}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Staff</DialogTitle>
+            <DialogDescription>Create a staff record.</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Phone</Label>
+              <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <Input value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Department</Label>
+              <Input value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Input value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={createUser.isPending}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };

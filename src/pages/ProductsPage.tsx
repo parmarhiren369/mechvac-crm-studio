@@ -1,120 +1,213 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Package, Tag, Layers, IndianRupee } from "lucide-react";
+import { Plus, Search, Package, Trash2 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useProducts, useCreateProduct, useDeleteProduct } from "@/hooks/use-database";
+import { toast } from "sonner";
 
-interface Product {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  price: string;
-  stock: number;
-  status: "In Stock" | "Low Stock" | "Out of Stock";
-  description: string;
-}
-
-const products: Product[] = [
-  { id: "1", name: "Vacuum Pump VP-2000", sku: "VP-2000", category: "Vacuum Pumps", price: "₹2,50,000", stock: 15, status: "In Stock", description: "High-performance industrial vacuum pump" },
-  { id: "2", name: "Industrial Blower IB-500", sku: "IB-500", category: "Blowers", price: "₹3,75,000", stock: 8, status: "In Stock", description: "Heavy-duty industrial blower system" },
-  { id: "3", name: "Compressor Unit CU-100", sku: "CU-100", category: "Compressors", price: "₹1,85,000", stock: 3, status: "Low Stock", description: "Compact compressor for medium applications" },
-  { id: "4", name: "Heat Exchanger HE-X200", sku: "HE-X200", category: "Heat Exchangers", price: "₹4,50,000", stock: 0, status: "Out of Stock", description: "Advanced heat exchange system" },
-  { id: "5", name: "Filtration System FS-300", sku: "FS-300", category: "Filtration", price: "₹1,20,000", stock: 22, status: "In Stock", description: "Multi-stage filtration system" },
-  { id: "6", name: "Control Panel CP-PRO", sku: "CP-PRO", category: "Controls", price: "₹75,000", stock: 5, status: "Low Stock", description: "Programmable control panel" },
-];
-
-const getStockColor = (status: Product["status"]) => {
-  switch (status) {
-    case "In Stock": return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
-    case "Low Stock": return "bg-amber-500/10 text-amber-600 border-amber-500/20";
-    default: return "bg-destructive/10 text-destructive border-destructive/20";
+const getStockColor = (status?: string) => {
+  switch ((status || "").toLowerCase()) {
+    case "in stock":
+      return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
+    case "low stock":
+      return "bg-amber-500/10 text-amber-600 border-amber-500/20";
+    default:
+      return "bg-destructive/10 text-destructive border-destructive/20";
   }
 };
 
 const ProductsPage = () => {
+  const { data: products, isLoading } = useProducts();
+  const createProduct = useCreateProduct();
+  const deleteProduct = useDeleteProduct();
+
+  const [search, setSearch] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    sku: "",
+    category: "",
+    price: "",
+    cost: "",
+    stock_quantity: "",
+    unit: "",
+    status: "in stock",
+    description: "",
+  });
+
+  const filtered = (products ?? []).filter((p) => (p.name || "").toLowerCase().includes(search.toLowerCase()));
+
+  const handleCreate = async () => {
+    if (!formData.name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+    try {
+      await createProduct.mutateAsync({
+        name: formData.name.trim(),
+        sku: formData.sku || undefined,
+        category: formData.category || undefined,
+        price: formData.price ? Number(formData.price) : undefined,
+        cost: formData.cost ? Number(formData.cost) : undefined,
+        stock_quantity: formData.stock_quantity ? Number(formData.stock_quantity) : undefined,
+        unit: formData.unit || undefined,
+        status: formData.status,
+        description: formData.description || undefined,
+      });
+      toast.success("Product added");
+      setIsCreateOpen(false);
+      setFormData({ name: "", sku: "", category: "", price: "", cost: "", stock_quantity: "", unit: "", status: "in stock", description: "" });
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to add product");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this product?")) return;
+    try {
+      await deleteProduct.mutateAsync(id);
+      toast.success("Product deleted");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete product");
+    }
+  };
+
   return (
     <DashboardLayout title="Products">
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total Products", value: "156", icon: Package, color: "primary" },
-          { label: "Categories", value: "12", icon: Layers, color: "blue-500" },
-          { label: "Low Stock Items", value: "8", icon: Tag, color: "amber-500" },
-          { label: "Total Value", value: "₹4.2Cr", icon: IndianRupee, color: "emerald-500" },
-        ].map((stat, i) => (
-          <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <CardContent className="p-5 relative flex items-center gap-4">
-              <div className={`h-12 w-12 rounded-xl bg-${stat.color} flex items-center justify-center shadow-lg`}>
-                <stat.icon className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                <p className="text-3xl font-bold">{stat.value}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Header */}
       <Card className="shadow-card mb-6">
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search products..." className="pl-10" />
+              <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products..." className="pl-10" />
             </div>
-            <Button className="bg-primary hover:bg-primary/90 gap-2">
+            <Button className="bg-primary hover:bg-primary/90 gap-2" onClick={() => setIsCreateOpen(true)}>
               <Plus className="h-4 w-4" /> Add Product
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {products.map((product, index) => (
-          <Card 
-            key={product.id} 
-            className="shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in group overflow-hidden"
-            style={{ animationDelay: `${index * 60}ms` }}
-          >
-            <div className="h-32 bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-all duration-300">
-              <Package className="h-16 w-16 text-muted-foreground/30 group-hover:text-primary/40 group-hover:scale-110 transition-all duration-300" />
+      <Card className="shadow-card">
+        <CardHeader>
+          <CardTitle>Products</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>SKU</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow><TableCell colSpan={7} className="text-center py-6">Loading...</TableCell></TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow><TableCell colSpan={7} className="text-center py-6">No products.</TableCell></TableRow>
+              ) : (
+                filtered.map((product) => (
+                  <TableRow key={product.id}>
+                    <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell>{product.sku || "—"}</TableCell>
+                    <TableCell>{product.category || "—"}</TableCell>
+                    <TableCell>
+                      {(product.price ?? 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
+                    </TableCell>
+                    <TableCell>{product.stock_quantity ?? 0}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={getStockColor(product.status)}>
+                        {product.status || "in stock"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(product.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Product</DialogTitle>
+            <DialogDescription>Create a product record.</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
             </div>
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{product.name}</h3>
-                  <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
-                </div>
-                <Badge variant="outline" className={getStockColor(product.status)}>
-                  {product.status}
-                </Badge>
-              </div>
-              
-              <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
-              
-              <div className="flex items-center justify-between pt-3 border-t border-border">
-                <div>
-                  <p className="text-xs text-muted-foreground">Price</p>
-                  <p className="text-xl font-bold text-primary">{product.price}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-muted-foreground">Stock</p>
-                  <p className="text-lg font-semibold">{product.stock} units</p>
-                </div>
-              </div>
-              
-              <div className="mt-3">
-                <Badge variant="secondary" className="text-xs">{product.category}</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            <div className="space-y-2">
+              <Label>SKU</Label>
+              <Input value={formData.sku} onChange={(e) => setFormData({ ...formData, sku: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Category</Label>
+              <Input value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Unit</Label>
+              <Input value={formData.unit} onChange={(e) => setFormData({ ...formData, unit: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Price</Label>
+              <Input value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Cost</Label>
+              <Input value={formData.cost} onChange={(e) => setFormData({ ...formData, cost: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Stock Quantity</Label>
+              <Input value={formData.stock_quantity} onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Input value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+            </div>
+            <div className="space-y-2 col-span-2">
+              <Label>Description</Label>
+              <Input value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={createProduct.isPending}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };

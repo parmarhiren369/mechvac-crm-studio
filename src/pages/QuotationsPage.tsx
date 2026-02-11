@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,111 +11,196 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Download, FileText, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Plus, FileText, Clock, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useQuotations, useCreateQuotation, useDeleteQuotation } from "@/hooks/use-database";
+import { toast } from "sonner";
 
-interface Quotation {
-  id: string;
-  quotationNo: string;
-  customer: string;
-  date: string;
-  validUntil: string;
-  amount: string;
-  status: "Approved" | "Pending" | "Rejected" | "Draft";
-}
-
-const quotations: Quotation[] = [
-  { id: "1", quotationNo: "QT-2024-001", customer: "Tech Corp Pvt Ltd", date: "22 Jan 2024", validUntil: "22 Feb 2024", amount: "₹12,50,000", status: "Approved" },
-  { id: "2", quotationNo: "QT-2024-002", customer: "Global Industries", date: "21 Jan 2024", validUntil: "21 Feb 2024", amount: "₹8,75,000", status: "Pending" },
-  { id: "3", quotationNo: "QT-2024-003", customer: "Prime Solutions", date: "20 Jan 2024", validUntil: "20 Feb 2024", amount: "₹15,00,000", status: "Draft" },
-  { id: "4", quotationNo: "QT-2024-004", customer: "Apex Ltd", date: "19 Jan 2024", validUntil: "19 Feb 2024", amount: "₹6,25,000", status: "Rejected" },
-  { id: "5", quotationNo: "QT-2024-005", customer: "InnoTech Solutions", date: "18 Jan 2024", validUntil: "18 Feb 2024", amount: "₹22,00,000", status: "Approved" },
-];
-
-const getStatusStyle = (status: Quotation["status"]) => {
-  switch (status) {
-    case "Approved": return { bg: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", icon: CheckCircle };
-    case "Pending": return { bg: "bg-amber-500/10 text-amber-600 border-amber-500/20", icon: Clock };
-    case "Rejected": return { bg: "bg-destructive/10 text-destructive border-destructive/20", icon: XCircle };
-    default: return { bg: "bg-muted text-muted-foreground border-muted", icon: FileText };
+const getStatusStyle = (status?: string) => {
+  switch ((status || "").toLowerCase()) {
+    case "approved":
+    case "accepted":
+      return { bg: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", icon: CheckCircle };
+    case "pending":
+      return { bg: "bg-amber-500/10 text-amber-600 border-amber-500/20", icon: Clock };
+    case "rejected":
+      return { bg: "bg-destructive/10 text-destructive border-destructive/20", icon: XCircle };
+    default:
+      return { bg: "bg-muted text-muted-foreground border-muted", icon: FileText };
   }
 };
 
 const QuotationsPage = () => {
+  const { data: quotations, isLoading } = useQuotations();
+  const createQuotation = useCreateQuotation();
+  const deleteQuotation = useDeleteQuotation();
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    quotation_number: "",
+    client_id: "",
+    subject: "",
+    amount: "",
+    tax: "",
+    total_amount: "",
+    status: "draft",
+    valid_until: "",
+    issued_date: "",
+  });
+
+  const handleCreate = async () => {
+    try {
+      await createQuotation.mutateAsync({
+        quotation_number: formData.quotation_number || undefined,
+        client_id: formData.client_id ? Number(formData.client_id) : undefined,
+        subject: formData.subject || undefined,
+        amount: formData.amount ? Number(formData.amount) : undefined,
+        tax: formData.tax ? Number(formData.tax) : undefined,
+        total_amount: formData.total_amount ? Number(formData.total_amount) : undefined,
+        status: formData.status,
+        valid_until: formData.valid_until || undefined,
+        issued_date: formData.issued_date || undefined,
+      });
+      toast.success("Quotation created");
+      setIsCreateOpen(false);
+      setFormData({ quotation_number: "", client_id: "", subject: "", amount: "", tax: "", total_amount: "", status: "draft", valid_until: "", issued_date: "" });
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to create quotation");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this quotation?")) return;
+    try {
+      await deleteQuotation.mutateAsync(id);
+      toast.success("Quotation deleted");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete quotation");
+    }
+  };
+
   return (
     <DashboardLayout title="Quotations">
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total Quotations", value: "1,234", change: "+12%", icon: FileText, color: "primary" },
-          { label: "Approved", value: "456", change: "+8%", icon: CheckCircle, color: "emerald-500" },
-          { label: "Pending", value: "289", change: "-3%", icon: Clock, color: "amber-500" },
-          { label: "Total Value", value: "₹2.4Cr", change: "+18%", icon: FileText, color: "blue-500" },
-        ].map((stat, i) => (
-          <Card key={i} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <CardContent className="p-5 relative">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                  <p className="text-3xl font-bold mt-1">{stat.value}</p>
-                  <p className="text-xs text-emerald-500 mt-1">{stat.change} this month</p>
-                </div>
-                <div className={`h-12 w-12 rounded-xl bg-${stat.color} flex items-center justify-center shadow-lg`}>
-                  <stat.icon className="h-6 w-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Table */}
       <Card className="shadow-card">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl">All Quotations</CardTitle>
-          <div className="flex gap-2">
-            <Button variant="outline" className="gap-2"><Download className="h-4 w-4" /> Export</Button>
-            <Button className="bg-primary hover:bg-primary/90 gap-2"><Plus className="h-4 w-4" /> New Quotation</Button>
-          </div>
+          <Button className="bg-primary hover:bg-primary/90 gap-2" onClick={() => setIsCreateOpen(true)}>
+            <Plus className="h-4 w-4" /> New Quotation
+          </Button>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30">
                 <TableHead>Quotation No</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Client ID</TableHead>
+                <TableHead>Issued</TableHead>
                 <TableHead>Valid Until</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {quotations.map((q, index) => {
-                const statusStyle = getStatusStyle(q.status);
-                return (
-                  <TableRow 
-                    key={q.id} 
-                    className="hover:bg-muted/50 transition-colors animate-fade-in cursor-pointer"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <TableCell className="font-semibold text-primary">{q.quotationNo}</TableCell>
-                    <TableCell className="font-medium">{q.customer}</TableCell>
-                    <TableCell className="text-muted-foreground">{q.date}</TableCell>
-                    <TableCell className="text-muted-foreground">{q.validUntil}</TableCell>
-                    <TableCell className="font-semibold">{q.amount}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={`${statusStyle.bg} gap-1`}>
-                        <statusStyle.icon className="h-3 w-3" />
-                        {q.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-6">Loading...</TableCell>
+                </TableRow>
+              ) : (quotations ?? []).length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-6">No quotations yet.</TableCell>
+                </TableRow>
+              ) : (
+                (quotations ?? []).map((q) => {
+                  const statusStyle = getStatusStyle(q.status);
+                  return (
+                    <TableRow key={q.id} className="hover:bg-muted/50 transition-colors">
+                      <TableCell className="font-semibold text-primary">{q.quotation_number || `QT-${q.id}`}</TableCell>
+                      <TableCell>{q.client_id ?? "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">{q.issued_date ? new Date(q.issued_date).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">{q.valid_until ? new Date(q.valid_until).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell className="font-semibold">
+                        {(q.total_amount ?? q.amount ?? 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={`${statusStyle.bg} gap-1`}>
+                          <statusStyle.icon className="h-3 w-3" />
+                          {q.status || "draft"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button size="icon" variant="ghost" onClick={() => handleDelete(q.id)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>New Quotation</DialogTitle>
+            <DialogDescription>Create a quotation record.</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Quotation No</Label>
+              <Input value={formData.quotation_number} onChange={(e) => setFormData({ ...formData, quotation_number: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Client ID</Label>
+              <Input value={formData.client_id} onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} />
+            </div>
+            <div className="space-y-2 col-span-2">
+              <Label>Subject</Label>
+              <Input value={formData.subject} onChange={(e) => setFormData({ ...formData, subject: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Amount</Label>
+              <Input value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Tax</Label>
+              <Input value={formData.tax} onChange={(e) => setFormData({ ...formData, tax: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Total Amount</Label>
+              <Input value={formData.total_amount} onChange={(e) => setFormData({ ...formData, total_amount: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Input value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Issued Date</Label>
+              <Input type="date" value={formData.issued_date} onChange={(e) => setFormData({ ...formData, issued_date: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Valid Until</Label>
+              <Input type="date" value={formData.valid_until} onChange={(e) => setFormData({ ...formData, valid_until: e.target.value })} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={createQuotation.isPending}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
