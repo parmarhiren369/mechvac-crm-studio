@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from 'react';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { useLeads, useCreateLead, useUpdateLead, useDeleteLead } from '@/hooks/use-database';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Plus, Search, MoreVertical, Pencil, Trash2, Mail, Phone } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -12,185 +11,460 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Plus, Search, Filter, Download, MoreHorizontal, Phone, Mail, Eye } from "lucide-react";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import type { Lead } from '@/types/database';
 
-interface Lead {
-  id: string;
-  name: string;
-  company: string;
-  email: string;
-  phone: string;
-  lastContacted: string;
-  assignedTo: { name: string; initials: string };
-  status: "Hot" | "Warm" | "Cold" | "General";
-  source: string;
-  value: string;
-}
+export default function LeadsPage() {
+  const { data: leads, isLoading } = useLeads();
+  const createLead = useCreateLead();
+  const updateLead = useUpdateLead();
+  const deleteLead = useDeleteLead();
 
-const leads: Lead[] = [
-  { id: "1", name: "Ms. Shobhna Chhabra", company: "Tech Corp", email: "shobhna@techcorp.com", phone: "+91 98765 43210", lastContacted: "1 hour ago", assignedTo: { name: "Ms. Bhargesha", initials: "MB" }, status: "Hot", source: "Website", value: "₹12.5L" },
-  { id: "2", name: "Pranav Kalen", company: "Global Industries", email: "pranav@global.com", phone: "+91 87654 32109", lastContacted: "2 days ago", assignedTo: { name: "Mr. Jigar", initials: "JG" }, status: "Warm", source: "Referral", value: "₹8.2L" },
-  { id: "3", name: "Mr. Yatin Tamke", company: "Prime Solutions", email: "yatin@prime.com", phone: "+91 76543 21098", lastContacted: "3 days ago", assignedTo: { name: "Ms. Bhargesha", initials: "MB" }, status: "Cold", source: "LinkedIn", value: "₹5.8L" },
-  { id: "4", name: "Mr. Sandeep Shelar", company: "Apex Ltd", email: "sandeep@apex.com", phone: "+91 65432 10987", lastContacted: "1 week ago", assignedTo: { name: "Mr. Jigar", initials: "JG" }, status: "General", source: "Exhibition", value: "₹15.3L" },
-  { id: "5", name: "Mrs. Priya Sharma", company: "InnoTech", email: "priya@innotech.com", phone: "+91 54321 09876", lastContacted: "2 hours ago", assignedTo: { name: "Ms. Bhargesha", initials: "MB" }, status: "Hot", source: "Website", value: "₹22.1L" },
-  { id: "6", name: "Mr. Rajesh Kumar", company: "BuildMax", email: "rajesh@buildmax.com", phone: "+91 43210 98765", lastContacted: "5 days ago", assignedTo: { name: "Mr. Jigar", initials: "JG" }, status: "Warm", source: "Cold Call", value: "₹9.7L" },
-];
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    source: '',
+    status: 'new',
+    notes: '',
+  });
 
-const getStatusColor = (status: Lead["status"]) => {
-  switch (status) {
-    case "Hot": return "bg-destructive/10 text-destructive border-destructive/20";
-    case "Warm": return "bg-amber-500/10 text-amber-600 border-amber-500/20";
-    case "Cold": return "bg-blue-500/10 text-blue-600 border-blue-500/20";
-    default: return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
-  }
-};
+  const filteredLeads = leads?.filter(lead =>
+    lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.company?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-const LeadsPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const handleCreate = async () => {
+    try {
+      await createLead.mutateAsync(formData);
+      toast.success('Lead created successfully');
+      setIsCreateDialogOpen(false);
+      resetForm();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create lead');
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!selectedLead) return;
+    try {
+      await updateLead.mutateAsync({ id: selectedLead.id, data: formData });
+      toast.success('Lead updated successfully');
+      setIsEditDialogOpen(false);
+      setSelectedLead(null);
+      resetForm();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update lead');
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this lead?')) return;
+    try {
+      await deleteLead.mutateAsync(id);
+      toast.success('Lead deleted successfully');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to delete lead');
+    }
+  };
+
+  const openEditDialog = (lead: Lead) => {
+    setSelectedLead(lead);
+    setFormData({
+      name: lead.name || '',
+      email: lead.email || '',
+      phone: lead.phone || '',
+      company: lead.company || '',
+      source: lead.source || '',
+      status: lead.status || 'new',
+      notes: lead.notes || '',
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      company: '',
+      source: '',
+      status: 'new',
+      notes: '',
+    });
+  };
+
+  const getStatusBadge = (status?: string) => {
+    const variants: Record<string, string> = {
+      new: 'bg-blue-100 text-blue-800',
+      contacted: 'bg-yellow-100 text-yellow-800',
+      qualified: 'bg-green-100 text-green-800',
+      converted: 'bg-purple-100 text-purple-800',
+      lost: 'bg-red-100 text-red-800',
+    };
+    return (
+      <Badge className={variants[status || 'new'] || 'bg-gray-100 text-gray-800'}>
+        {status || 'new'}
+      </Badge>
+    );
+  };
 
   return (
-    <DashboardLayout title="All Leads">
-      {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total Leads", value: "2,847", color: "bg-primary" },
-          { label: "Hot Leads", value: "156", color: "bg-destructive" },
-          { label: "Warm Leads", value: "423", color: "bg-amber-500" },
-          { label: "Cold Leads", value: "892", color: "bg-blue-500" },
-        ].map((stat, i) => (
-          <Card key={i} className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className={`absolute inset-0 ${stat.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
-            <CardContent className="p-5">
-              <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-              <p className="text-3xl font-bold mt-1">{stat.value}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Main Table Card */}
-      <Card className="shadow-card">
-        <CardHeader className="pb-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <CardTitle className="text-xl font-semibold">Lead Management</CardTitle>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search leads..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
-                />
-              </div>
-              <Select defaultValue="all">
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="hot">Hot</SelectItem>
-                  <SelectItem value="warm">Warm</SelectItem>
-                  <SelectItem value="cold">Cold</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon"><Filter className="h-4 w-4" /></Button>
-              <Button variant="outline" size="icon"><Download className="h-4 w-4" /></Button>
-              <Button className="bg-primary hover:bg-primary/90 gap-2">
-                <Plus className="h-4 w-4" /> Add Lead
-              </Button>
-            </div>
+    <DashboardLayout title="Leads" breadcrumb={[{ label: 'Leads' }]}>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Leads</h1>
+            <p className="text-muted-foreground">Manage your sales leads</p>
           </div>
-        </CardHeader>
-        <CardContent>
+          <Button onClick={() => setIsCreateDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Lead
+          </Button>
+        </div>
+
+        {/* Search */}
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search leads..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="border rounded-lg">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30">
-                <TableHead>Lead Details</TableHead>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Company</TableHead>
                 <TableHead>Contact</TableHead>
-                <TableHead>Last Contacted</TableHead>
-                <TableHead>Assigned To</TableHead>
-                <TableHead>Value</TableHead>
+                <TableHead>Source</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Created</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leads.map((lead, index) => (
-                <TableRow 
-                  key={lead.id} 
-                  className="hover:bg-muted/50 transition-colors animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10 ring-2 ring-primary/10">
-                        <AvatarFallback className="bg-primary text-white font-semibold">
-                          {lead.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold text-foreground hover:text-primary cursor-pointer transition-colors">{lead.name}</p>
-                        <p className="text-sm text-muted-foreground">{lead.company}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Mail className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">{lead.email}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Phone className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">{lead.phone}</span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{lead.lastContacted}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-7 w-7">
-                        <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">{lead.assignedTo.initials}</AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm">{lead.assignedTo.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-semibold text-foreground">{lead.value}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={`${getStatusColor(lead.status)} font-medium`}>
-                      {lead.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
-                        <Phone className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </div>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : filteredLeads?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    No leads found. Create your first lead!
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredLeads?.map((lead) => (
+                  <TableRow key={lead.id}>
+                    <TableCell className="font-medium">{lead.name}</TableCell>
+                    <TableCell>{lead.company || '-'}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        {lead.email && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Mail className="h-3 w-3 text-muted-foreground" />
+                            {lead.email}
+                          </div>
+                        )}
+                        {lead.phone && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Phone className="h-3 w-3 text-muted-foreground" />
+                            {lead.phone}
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>{lead.source || '-'}</TableCell>
+                    <TableCell>{getStatusBadge(lead.status)}</TableCell>
+                    <TableCell>
+                      {lead.created_at
+                        ? new Date(lead.created_at).toLocaleDateString()
+                        : '-'}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => openEditDialog(lead)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(lead.id)}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Create Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Lead</DialogTitle>
+            <DialogDescription>Add a new lead to your pipeline</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="John Doe"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="company">Company</Label>
+                <Input
+                  id="company"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  placeholder="Company name"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+1234567890"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="source">Source</Label>
+                <Select
+                  value={formData.source}
+                  onValueChange={(value) => setFormData({ ...formData, source: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="website">Website</SelectItem>
+                    <SelectItem value="referral">Referral</SelectItem>
+                    <SelectItem value="social">Social Media</SelectItem>
+                    <SelectItem value="advertising">Advertising</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="contacted">Contacted</SelectItem>
+                    <SelectItem value="qualified">Qualified</SelectItem>
+                    <SelectItem value="converted">Converted</SelectItem>
+                    <SelectItem value="lost">Lost</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Additional notes..."
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreate} disabled={!formData.name || createLead.isPending}>
+              {createLead.isPending ? 'Creating...' : 'Create Lead'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Lead</DialogTitle>
+            <DialogDescription>Update lead information</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-name">Name *</Label>
+                <Input
+                  id="edit-name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-company">Company</Label>
+                <Input
+                  id="edit-company"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phone">Phone</Label>
+                <Input
+                  id="edit-phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-source">Source</Label>
+                <Select
+                  value={formData.source}
+                  onValueChange={(value) => setFormData({ ...formData, source: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="website">Website</SelectItem>
+                    <SelectItem value="referral">Referral</SelectItem>
+                    <SelectItem value="social">Social Media</SelectItem>
+                    <SelectItem value="advertising">Advertising</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-status">Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="contacted">Contacted</SelectItem>
+                    <SelectItem value="qualified">Qualified</SelectItem>
+                    <SelectItem value="converted">Converted</SelectItem>
+                    <SelectItem value="lost">Lost</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-notes">Notes</Label>
+              <Textarea
+                id="edit-notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdate} disabled={!formData.name || updateLead.isPending}>
+              {updateLead.isPending ? 'Updating...' : 'Update Lead'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
-};
-
-export default LeadsPage;
+}
