@@ -19,12 +19,33 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
 
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = name.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(normalizedEmail)) {
+      toast.error('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+
+    if (!normalizedName) {
+      toast.error('Please enter your full name');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await signUp(email, password, name);
+      await signUp(normalizedEmail, password, normalizedName);
       toast.success('Account created successfully!');
       navigate('/');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create account');
+      const message =
+        error?.message ||
+        (typeof error === 'string' ? error : '') ||
+        (error ? JSON.stringify(error) : '') ||
+        'Failed to create account';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

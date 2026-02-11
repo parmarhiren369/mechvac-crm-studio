@@ -47,12 +47,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, name: string) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = name.trim();
+
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password,
       options: {
         data: {
-          name,
+          name: normalizedName,
         },
       },
     });
@@ -60,13 +63,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Create user record in users table
     if (data.user) {
-      await supabase.from('users').insert({
+      const { error: insertError } = await supabase.from('users').insert({
         id: data.user.id,
-        email,
-        name,
+        email: normalizedEmail,
+        name: normalizedName,
         role: 'staff',
         status: 'active',
       });
+
+      if (insertError) {
+        throw insertError;
+      }
     }
   };
 

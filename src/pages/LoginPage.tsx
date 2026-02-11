@@ -19,11 +19,16 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await signIn(email, password);
+      await signIn(email.trim().toLowerCase(), password);
       toast.success('Welcome back!');
       navigate('/');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to sign in');
+      const message =
+        error?.message ||
+        (typeof error === 'string' ? error : '') ||
+        (error ? JSON.stringify(error) : '') ||
+        'Failed to sign in';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
