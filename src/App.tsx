@@ -19,6 +19,7 @@ import CompaniesPage from "./pages/CompaniesPage";
 import StaffPage from "./pages/StaffPage";
 import ProductsPage from "./pages/ProductsPage";
 import ServicesPage from "./pages/ServicesPage";
+import SettingsProfilePage from "./pages/SettingsProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/staff" element={<StaffPage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/settings/profile" element={<SettingsProfilePage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
