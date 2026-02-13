@@ -40,6 +40,8 @@ import ReportsSalesPage from "./pages/ReportsSalesPage";
 import ReportsLeadsPage from "./pages/ReportsLeadsPage";
 import PositionsPage from "./pages/PositionsPage";
 import CreatePositionPage from "./pages/CreatePositionPage";
+import DepartmentsPage from "./pages/DepartmentsPage";
+import CreateDepartmentPage from "./pages/CreateDepartmentPage";
 import CountriesPage from "./pages/CountriesPage";
 import CreateCountryPage from "./pages/CreateCountryPage";
 import StatesPage from "./pages/StatesPage";
@@ -104,11 +106,26 @@ const App = () => (
                 <Route path="/settings/leads/status/edit/:id" element={<CreateLeadStatusPage />} />
                 <Route path="/settings/fields/custom" element={<SettingsCustomFieldsPage />} />
                 <Route path="/settings/fields/groups" element={<SettingsFieldGroupsPage />} />
+                <Route path="/settings/fields/positions" element={<PositionsPage />} />
+                <Route path="/settings/fields/positions/create" element={<CreatePositionPage />} />
+                <Route path="/settings/fields/positions/edit/:id" element={<CreatePositionPage />} />
+                <Route path="/settings/fields/departments" element={<DepartmentsPage />} />
+                <Route path="/settings/fields/departments/create" element={<CreateDepartmentPage />} />
+                <Route path="/settings/fields/departments/edit/:id" element={<CreateDepartmentPage />} />
                 <Route path="/settings/inspection/templates" element={<SettingsInspectionTemplatesPage />} />
                 <Route path="/settings/inspection/checklists" element={<SettingsInspectionChecklistsPage />} />
                 <Route path="/settings/localization/languages" element={<SettingsLocalizationLanguagesPage />} />
                 <Route path="/settings/localization/currency" element={<SettingsLocalizationCurrencyPage />} />
                 <Route path="/settings/localization/date-format" element={<SettingsLocalizationDateFormatPage />} />
+                <Route path="/settings/localization/countries" element={<CountriesPage />} />
+                <Route path="/settings/localization/countries/create" element={<CreateCountryPage />} />
+                <Route path="/settings/localization/countries/edit/:id" element={<CreateCountryPage />} />
+                <Route path="/settings/localization/states" element={<StatesPage />} />
+                <Route path="/settings/localization/states/create" element={<CreateStatePage />} />
+                <Route path="/settings/localization/states/edit/:id" element={<CreateStatePage />} />
+                <Route path="/settings/localization/cities" element={<CitiesPage />} />
+                <Route path="/settings/localization/cities/create" element={<CreateCityPage />} />
+                <Route path="/settings/localization/cities/edit/:id" element={<CreateCityPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

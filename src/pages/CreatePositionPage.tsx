@@ -1,4 +1,4 @@
-import { GenericCreateFieldPage } from "@/components/fields/GenericCreateFieldPage";
+import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
 import {
   useFieldPosition,
   useCreateFieldPosition,

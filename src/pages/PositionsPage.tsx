@@ -1,4 +1,4 @@
-import { GenericFieldPage } from "@/components/fields/GenericFieldPage";
+import GenericFieldPage from "@/components/fields/GenericFieldPage";
 import { useFieldPositions, useDeleteFieldPosition } from "@/hooks/use-field-hooks";
 
 export default function PositionsPage() {
