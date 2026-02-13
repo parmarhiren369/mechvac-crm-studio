@@ -763,6 +763,14 @@ export function useLeadStatuses() {
   });
 }
 
+export function useLeadStatus(id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['lead_statuses', id],
+    queryFn: () => leadStatusesService.getById(id),
+    enabled: options?.enabled ?? true,
+  });
+}
+
 export function useCreateLeadStatus() {
   const queryClient = useQueryClient();
   return useMutation({

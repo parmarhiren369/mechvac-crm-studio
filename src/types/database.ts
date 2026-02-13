@@ -88,6 +88,41 @@ export interface Database {
         Insert: Omit<LeadStatus, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<LeadStatus, 'id' | 'created_at'>>;
       };
+      field_positions: {
+        Row: FieldPosition;
+        Insert: Omit<FieldPosition, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldPosition, 'id' | 'created_at'>>;
+      };
+      field_departments: {
+        Row: FieldDepartment;
+        Insert: Omit<FieldDepartment, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldDepartment, 'id' | 'created_at'>>;
+      };
+      field_industries: {
+        Row: FieldIndustry;
+        Insert: Omit<FieldIndustry, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldIndustry, 'id' | 'created_at'>>;
+      };
+      field_pump_types: {
+        Row: FieldPumpType;
+        Insert: Omit<FieldPumpType, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldPumpType, 'id' | 'created_at'>>;
+      };
+      field_manufacturers: {
+        Row: FieldManufacturer;
+        Insert: Omit<FieldManufacturer, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldManufacturer, 'id' | 'created_at'>>;
+      };
+      field_units: {
+        Row: FieldUnit;
+        Insert: Omit<FieldUnit, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldUnit, 'id' | 'created_at'>>;
+      };
+      field_pump_models: {
+        Row: FieldPumpModel;
+        Insert: Omit<FieldPumpModel, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldPumpModel, 'id' | 'created_at'>>;
+      };
       field_groups: {
         Row: FieldGroup;
         Insert: Omit<FieldGroup, 'id' | 'created_at' | 'updated_at'>;
@@ -375,8 +410,86 @@ export interface LeadSource {
 export interface LeadStatus {
   id: number;
   name: string;
+  value?: string;
   color?: string;
   stage_order?: number;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldPosition {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldDepartment {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldIndustry {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldPumpType {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldManufacturer {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldUnit {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldPumpModel {
+  id: number;
+  name: string;
+  value?: string;
+  sort_order?: number;
+  color?: string;
   status?: string;
   created_at?: string;
   updated_at?: string;

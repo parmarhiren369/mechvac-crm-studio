@@ -4,6 +4,8 @@ import type {
   Service, Task, User, CalendarEvent, Contact, 
   Project, Enquiry, Role, Workspace, Preference,
   LeadSource, LeadStatus, FieldGroup, CustomField,
+  FieldPosition, FieldDepartment, FieldIndustry, FieldPumpType,
+  FieldManufacturer, FieldUnit, FieldPumpModel,
   InspectionTemplate, InspectionChecklist,
   LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat,
   CompanySettings
@@ -359,6 +361,62 @@ export const leadStatusesService = {
   create: (status: Partial<LeadStatus>) => create<LeadStatus>('lead_statuses', status),
   update: (id: number, status: Partial<LeadStatus>) => update<LeadStatus>('lead_statuses', id, status),
   delete: (id: number) => remove('lead_statuses', id),
+};
+
+export const fieldPositionsService = {
+  getAll: () => getAll<FieldPosition>('field_positions'),
+  getById: (id: number) => getById<FieldPosition>('field_positions', id),
+  create: (field: Partial<FieldPosition>) => create<FieldPosition>('field_positions', field),
+  update: (id: number, field: Partial<FieldPosition>) => update<FieldPosition>('field_positions', id, field),
+  delete: (id: number) => remove('field_positions', id),
+};
+
+export const fieldDepartmentsService = {
+  getAll: () => getAll<FieldDepartment>('field_departments'),
+  getById: (id: number) => getById<FieldDepartment>('field_departments', id),
+  create: (field: Partial<FieldDepartment>) => create<FieldDepartment>('field_departments', field),
+  update: (id: number, field: Partial<FieldDepartment>) => update<FieldDepartment>('field_departments', id, field),
+  delete: (id: number) => remove('field_departments', id),
+};
+
+export const fieldIndustriesService = {
+  getAll: () => getAll<FieldIndustry>('field_industries'),
+  getById: (id: number) => getById<FieldIndustry>('field_industries', id),
+  create: (field: Partial<FieldIndustry>) => create<FieldIndustry>('field_industries', field),
+  update: (id: number, field: Partial<FieldIndustry>) => update<FieldIndustry>('field_industries', id, field),
+  delete: (id: number) => remove('field_industries', id),
+};
+
+export const fieldPumpTypesService = {
+  getAll: () => getAll<FieldPumpType>('field_pump_types'),
+  getById: (id: number) => getById<FieldPumpType>('field_pump_types', id),
+  create: (field: Partial<FieldPumpType>) => create<FieldPumpType>('field_pump_types', field),
+  update: (id: number, field: Partial<FieldPumpType>) => update<FieldPumpType>('field_pump_types', id, field),
+  delete: (id: number) => remove('field_pump_types', id),
+};
+
+export const fieldManufacturersService = {
+  getAll: () => getAll<FieldManufacturer>('field_manufacturers'),
+  getById: (id: number) => getById<FieldManufacturer>('field_manufacturers', id),
+  create: (field: Partial<FieldManufacturer>) => create<FieldManufacturer>('field_manufacturers', field),
+  update: (id: number, field: Partial<FieldManufacturer>) => update<FieldManufacturer>('field_manufacturers', id, field),
+  delete: (id: number) => remove('field_manufacturers', id),
+};
+
+export const fieldUnitsService = {
+  getAll: () => getAll<FieldUnit>('field_units'),
+  getById: (id: number) => getById<FieldUnit>('field_units', id),
+  create: (field: Partial<FieldUnit>) => create<FieldUnit>('field_units', field),
+  update: (id: number, field: Partial<FieldUnit>) => update<FieldUnit>('field_units', id, field),
+  delete: (id: number) => remove('field_units', id),
+};
+
+export const fieldPumpModelsService = {
+  getAll: () => getAll<FieldPumpModel>('field_pump_models'),
+  getById: (id: number) => getById<FieldPumpModel>('field_pump_models', id),
+  create: (field: Partial<FieldPumpModel>) => create<FieldPumpModel>('field_pump_models', field),
+  update: (id: number, field: Partial<FieldPumpModel>) => update<FieldPumpModel>('field_pump_models', id, field),
+  delete: (id: number) => remove('field_pump_models', id),
 };
 
 export const fieldGroupsService = {

@@ -27,7 +27,8 @@ import CreateRolePage from "./pages/CreateRolePage";
 import WorkspacesPage from "./pages/WorkspacesPage";
 import CreateWorkspacePage from "./pages/CreateWorkspacePage";
 import SettingsLeadSourcesPage from "./pages/SettingsLeadSourcesPage";
-import SettingsLeadStatusPage from "./pages/SettingsLeadStatusPage";
+import LeadStatusPage from "./pages/LeadStatusPage";
+import CreateLeadStatusPage from "./pages/CreateLeadStatusPage";
 import SettingsCustomFieldsPage from "./pages/SettingsCustomFieldsPage";
 import SettingsFieldGroupsPage from "./pages/SettingsFieldGroupsPage";
 import SettingsInspectionTemplatesPage from "./pages/SettingsInspectionTemplatesPage";
@@ -90,7 +91,9 @@ const App = () => (
                 <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
                 <Route path="/workspaces/edit/:id" element={<CreateWorkspacePage />} />
                 <Route path="/settings/leads/sources" element={<SettingsLeadSourcesPage />} />
-                <Route path="/settings/leads/status" element={<SettingsLeadStatusPage />} />
+                <Route path="/settings/leads/status" element={<LeadStatusPage />} />
+                <Route path="/settings/leads/status/create" element={<CreateLeadStatusPage />} />
+                <Route path="/settings/leads/status/edit/:id" element={<CreateLeadStatusPage />} />
                 <Route path="/settings/fields/custom" element={<SettingsCustomFieldsPage />} />
                 <Route path="/settings/fields/groups" element={<SettingsFieldGroupsPage />} />
                 <Route path="/settings/inspection/templates" element={<SettingsInspectionTemplatesPage />} />

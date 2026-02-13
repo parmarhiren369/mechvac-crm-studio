@@ -47,6 +47,7 @@ create table if not exists lead_sources (
 create table if not exists lead_statuses (
   id bigserial primary key,
   name text not null,
+  value text,
   color text,
   stage_order integer,
   status text default 'active',
