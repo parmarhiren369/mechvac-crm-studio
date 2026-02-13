@@ -44,6 +44,14 @@ import DepartmentsPage from "./pages/DepartmentsPage";
 import CreateDepartmentPage from "./pages/CreateDepartmentPage";
 import IndustriesPage from "./pages/IndustriesPage";
 import CreateIndustryPage from "./pages/CreateIndustryPage";
+import PumpTypesPage from "./pages/PumpTypesPage";
+import CreatePumpTypePage from "./pages/CreatePumpTypePage";
+import ManufacturersPage from "./pages/ManufacturersPage";
+import CreateManufacturerPage from "./pages/CreateManufacturerPage";
+import UnitsPage from "./pages/UnitsPage";
+import CreateUnitPage from "./pages/CreateUnitPage";
+import PumpModelsPage from "./pages/PumpModelsPage";
+import CreatePumpModelPage from "./pages/CreatePumpModelPage";
 import CountriesPage from "./pages/CountriesPage";
 import CreateCountryPage from "./pages/CreateCountryPage";
 import StatesPage from "./pages/StatesPage";
@@ -117,6 +125,18 @@ const App = () => (
                 <Route path="/settings/fields/industries" element={<IndustriesPage />} />
                 <Route path="/settings/fields/industries/create" element={<CreateIndustryPage />} />
                 <Route path="/settings/fields/industries/edit/:id" element={<CreateIndustryPage />} />
+                <Route path="/settings/fields/pump-types" element={<PumpTypesPage />} />
+                <Route path="/settings/fields/pump-types/create" element={<CreatePumpTypePage />} />
+                <Route path="/settings/fields/pump-types/edit/:id" element={<CreatePumpTypePage />} />
+                <Route path="/settings/fields/manufacturers" element={<ManufacturersPage />} />
+                <Route path="/settings/fields/manufacturers/create" element={<CreateManufacturerPage />} />
+                <Route path="/settings/fields/manufacturers/edit/:id" element={<CreateManufacturerPage />} />
+                <Route path="/settings/fields/units" element={<UnitsPage />} />
+                <Route path="/settings/fields/units/create" element={<CreateUnitPage />} />
+                <Route path="/settings/fields/units/edit/:id" element={<CreateUnitPage />} />
+                <Route path="/settings/fields/pump-models" element={<PumpModelsPage />} />
+                <Route path="/settings/fields/pump-models/create" element={<CreatePumpModelPage />} />
+                <Route path="/settings/fields/pump-models/edit/:id" element={<CreatePumpModelPage />} />
                 <Route path="/settings/inspection/templates" element={<SettingsInspectionTemplatesPage />} />
                 <Route path="/settings/inspection/checklists" element={<SettingsInspectionChecklistsPage />} />
                 <Route path="/settings/localization/languages" element={<SettingsLocalizationLanguagesPage />} />
