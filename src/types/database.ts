@@ -342,6 +342,10 @@ export interface Workspace {
   id: number;
   name: string;
   slug?: string;
+  image?: string;
+  logo?: string;
+  description?: string;
+  footer?: string;
   timezone?: string;
   status?: string;
   created_at?: string;

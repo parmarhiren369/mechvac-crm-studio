@@ -638,6 +638,14 @@ export function useWorkspaces() {
   });
 }
 
+export function useWorkspace(id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['workspaces', id],
+    queryFn: () => workspacesService.getById(id),
+    enabled: options?.enabled ?? true,
+  });
+}
+
 export function useCreateWorkspace() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -24,7 +24,8 @@ import AppSettingsPage from "./pages/AppSettingsPage";
 import SettingsPreferencesPage from "./pages/SettingsPreferencesPage";
 import RolesPage from "./pages/RolesPage";
 import CreateRolePage from "./pages/CreateRolePage";
-import SettingsWorkspacesPage from "./pages/SettingsWorkspacesPage";
+import WorkspacesPage from "./pages/WorkspacesPage";
+import CreateWorkspacePage from "./pages/CreateWorkspacePage";
 import SettingsLeadSourcesPage from "./pages/SettingsLeadSourcesPage";
 import SettingsLeadStatusPage from "./pages/SettingsLeadStatusPage";
 import SettingsCustomFieldsPage from "./pages/SettingsCustomFieldsPage";
@@ -85,7 +86,9 @@ const App = () => (
                 <Route path="/roles" element={<RolesPage />} />
                 <Route path="/roles/create" element={<CreateRolePage />} />
                 <Route path="/roles/edit/:id" element={<CreateRolePage />} />
-                <Route path="/settings/workspaces" element={<SettingsWorkspacesPage />} />
+                <Route path="/workspaces" element={<WorkspacesPage />} />
+                <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
+                <Route path="/workspaces/edit/:id" element={<CreateWorkspacePage />} />
                 <Route path="/settings/leads/sources" element={<SettingsLeadSourcesPage />} />
                 <Route path="/settings/leads/status" element={<SettingsLeadStatusPage />} />
                 <Route path="/settings/fields/custom" element={<SettingsCustomFieldsPage />} />
