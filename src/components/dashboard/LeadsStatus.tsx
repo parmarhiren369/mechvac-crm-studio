@@ -11,8 +11,20 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeads } from "@/hooks/use-database";
 
+const getStatusLabel = (status?: string) => {
+  const map: Record<string, string> = {
+    N: "new",
+    C: "contacted",
+    Q: "qualified",
+    V: "converted",
+    L: "lost",
+  };
+  const normalized = (status || "").toUpperCase();
+  return map[normalized] || status || "new";
+};
+
 const getStatusColor = (status?: string) => {
-  switch ((status || "").toLowerCase()) {
+  switch (getStatusLabel(status).toLowerCase()) {
     case "hot":
       return "bg-destructive/10 text-destructive border-destructive/20";
     case "warm":
@@ -114,7 +126,7 @@ export const LeadsStatus = () => {
                     variant="outline"
                     className={`${getStatusColor(lead.status)} font-medium`}
                   >
-                    {lead.status || "new"}
+                    {getStatusLabel(lead.status)}
                   </Badge>
                 </TableCell>
               </TableRow>

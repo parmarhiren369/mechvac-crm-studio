@@ -65,9 +65,25 @@ export default function LeadsPage() {
     lead.company?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const normalizeStatus = (value?: string) => {
+    const v = (value || "").toLowerCase();
+    if (!v) return undefined;
+    const map: Record<string, string> = {
+      new: "N",
+      contacted: "C",
+      qualified: "Q",
+      converted: "V",
+      lost: "L",
+    };
+    return map[v] || v.slice(0, 1).toUpperCase();
+  };
+
   const handleCreate = async () => {
     try {
-      await createLead.mutateAsync(formData);
+      await createLead.mutateAsync({
+        ...formData,
+        status: normalizeStatus(formData.status),
+      });
       toast.success('Lead created successfully');
       setIsCreateDialogOpen(false);
       resetForm();
@@ -79,7 +95,13 @@ export default function LeadsPage() {
   const handleUpdate = async () => {
     if (!selectedLead) return;
     try {
-      await updateLead.mutateAsync({ id: selectedLead.id, data: formData });
+      await updateLead.mutateAsync({
+        id: selectedLead.id,
+        data: {
+          ...formData,
+          status: normalizeStatus(formData.status),
+        },
+      });
       toast.success('Lead updated successfully');
       setIsEditDialogOpen(false);
       setSelectedLead(null);
@@ -126,6 +148,15 @@ export default function LeadsPage() {
   };
 
   const getStatusBadge = (status?: string) => {
+    const labelMap: Record<string, string> = {
+      N: "new",
+      C: "contacted",
+      Q: "qualified",
+      V: "converted",
+      L: "lost",
+    };
+    const normalized = (status || "").toUpperCase();
+    const label = labelMap[normalized] || status || "new";
     const variants: Record<string, string> = {
       new: 'bg-blue-100 text-blue-800',
       contacted: 'bg-yellow-100 text-yellow-800',
@@ -134,8 +165,8 @@ export default function LeadsPage() {
       lost: 'bg-red-100 text-red-800',
     };
     return (
-      <Badge className={variants[status || 'new'] || 'bg-gray-100 text-gray-800'}>
-        {status || 'new'}
+      <Badge className={variants[label] || 'bg-gray-100 text-gray-800'}>
+        {label}
       </Badge>
     );
   };

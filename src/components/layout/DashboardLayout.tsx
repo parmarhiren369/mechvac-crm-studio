@@ -36,7 +36,7 @@ export const DashboardLayout = ({ children, title, breadcrumb = [] }: DashboardL
               </h1>
               <div className="h-1 w-20 bg-cyan-500 rounded-full"></div>
             </div>
-            <Breadcrumb items={[{ label: title }]} />
+            <Breadcrumb items={breadcrumb.length ? breadcrumb : [{ label: title }]} />
           </div>
           
           <div className="animate-fade-in">

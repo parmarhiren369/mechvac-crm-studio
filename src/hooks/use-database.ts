@@ -2,11 +2,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   leadsService, clientsService, quotationsService, ordersService,
   productsService, servicesService, tasksService, usersService,
-  calendarEventsService, contactsService, projectsService, enquiriesService
+  calendarEventsService, contactsService, projectsService, enquiriesService,
+  rolesService, workspacesService, preferencesService,
+  leadSourcesService, leadStatusesService,
+  fieldGroupsService, customFieldsService,
+  inspectionTemplatesService, inspectionChecklistsService,
+  localizationLanguagesService, localizationCurrenciesService, localizationDateFormatsService
 } from '@/lib/database';
 import type { 
   Lead, Client, Quotation, Order, Product, Service, 
-  Task, User, CalendarEvent, Contact, Project, Enquiry 
+  Task, User, CalendarEvent, Contact, Project, Enquiry,
+  Role, Workspace, Preference, LeadSource, LeadStatus,
+  FieldGroup, CustomField, InspectionTemplate, InspectionChecklist,
+  LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat
 } from '@/types/database';
 
 // Leads Hooks
@@ -569,6 +577,474 @@ export function useDeleteEnquiry() {
     mutationFn: (id: number) => enquiriesService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['enquiries'] });
+    },
+  });
+}
+
+// Roles Hooks
+export function useRoles() {
+  return useQuery({
+    queryKey: ['roles'],
+    queryFn: () => rolesService.getAll(),
+  });
+}
+
+export function useCreateRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (role: Partial<Role>) => rolesService.create(role),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+    },
+  });
+}
+
+export function useUpdateRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Role> }) =>
+      rolesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+    },
+  });
+}
+
+export function useDeleteRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => rolesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+    },
+  });
+}
+
+// Workspaces Hooks
+export function useWorkspaces() {
+  return useQuery({
+    queryKey: ['workspaces'],
+    queryFn: () => workspacesService.getAll(),
+  });
+}
+
+export function useCreateWorkspace() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (workspace: Partial<Workspace>) => workspacesService.create(workspace),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    },
+  });
+}
+
+export function useUpdateWorkspace() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Workspace> }) =>
+      workspacesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    },
+  });
+}
+
+export function useDeleteWorkspace() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => workspacesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    },
+  });
+}
+
+// Preferences Hooks
+export function usePreferences() {
+  return useQuery({
+    queryKey: ['preferences'],
+    queryFn: () => preferencesService.getAll(),
+  });
+}
+
+export function useCreatePreference() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (preference: Partial<Preference>) => preferencesService.create(preference),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['preferences'] });
+    },
+  });
+}
+
+export function useUpdatePreference() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Preference> }) =>
+      preferencesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['preferences'] });
+    },
+  });
+}
+
+export function useDeletePreference() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => preferencesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['preferences'] });
+    },
+  });
+}
+
+// Lead Sources Hooks
+export function useLeadSources() {
+  return useQuery({
+    queryKey: ['lead_sources'],
+    queryFn: () => leadSourcesService.getAll(),
+  });
+}
+
+export function useCreateLeadSource() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (source: Partial<LeadSource>) => leadSourcesService.create(source),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['lead_sources'] });
+    },
+  });
+}
+
+export function useUpdateLeadSource() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<LeadSource> }) =>
+      leadSourcesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['lead_sources'] });
+    },
+  });
+}
+
+export function useDeleteLeadSource() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => leadSourcesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['lead_sources'] });
+    },
+  });
+}
+
+// Lead Statuses Hooks
+export function useLeadStatuses() {
+  return useQuery({
+    queryKey: ['lead_statuses'],
+    queryFn: () => leadStatusesService.getAll(),
+  });
+}
+
+export function useCreateLeadStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (status: Partial<LeadStatus>) => leadStatusesService.create(status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['lead_statuses'] });
+    },
+  });
+}
+
+export function useUpdateLeadStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<LeadStatus> }) =>
+      leadStatusesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['lead_statuses'] });
+    },
+  });
+}
+
+export function useDeleteLeadStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => leadStatusesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['lead_statuses'] });
+    },
+  });
+}
+
+// Field Groups Hooks
+export function useFieldGroups() {
+  return useQuery({
+    queryKey: ['field_groups'],
+    queryFn: () => fieldGroupsService.getAll(),
+  });
+}
+
+export function useCreateFieldGroup() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (group: Partial<FieldGroup>) => fieldGroupsService.create(group),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['field_groups'] });
+    },
+  });
+}
+
+export function useUpdateFieldGroup() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<FieldGroup> }) =>
+      fieldGroupsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['field_groups'] });
+    },
+  });
+}
+
+export function useDeleteFieldGroup() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => fieldGroupsService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['field_groups'] });
+    },
+  });
+}
+
+// Custom Fields Hooks
+export function useCustomFields() {
+  return useQuery({
+    queryKey: ['custom_fields'],
+    queryFn: () => customFieldsService.getAll(),
+  });
+}
+
+export function useCreateCustomField() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (field: Partial<CustomField>) => customFieldsService.create(field),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['custom_fields'] });
+    },
+  });
+}
+
+export function useUpdateCustomField() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<CustomField> }) =>
+      customFieldsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['custom_fields'] });
+    },
+  });
+}
+
+export function useDeleteCustomField() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => customFieldsService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['custom_fields'] });
+    },
+  });
+}
+
+// Inspection Templates Hooks
+export function useInspectionTemplates() {
+  return useQuery({
+    queryKey: ['inspection_templates'],
+    queryFn: () => inspectionTemplatesService.getAll(),
+  });
+}
+
+export function useCreateInspectionTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (template: Partial<InspectionTemplate>) => inspectionTemplatesService.create(template),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection_templates'] });
+    },
+  });
+}
+
+export function useUpdateInspectionTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<InspectionTemplate> }) =>
+      inspectionTemplatesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection_templates'] });
+    },
+  });
+}
+
+export function useDeleteInspectionTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => inspectionTemplatesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection_templates'] });
+    },
+  });
+}
+
+// Inspection Checklists Hooks
+export function useInspectionChecklists() {
+  return useQuery({
+    queryKey: ['inspection_checklists'],
+    queryFn: () => inspectionChecklistsService.getAll(),
+  });
+}
+
+export function useCreateInspectionChecklist() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (checklist: Partial<InspectionChecklist>) => inspectionChecklistsService.create(checklist),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection_checklists'] });
+    },
+  });
+}
+
+export function useUpdateInspectionChecklist() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<InspectionChecklist> }) =>
+      inspectionChecklistsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection_checklists'] });
+    },
+  });
+}
+
+export function useDeleteInspectionChecklist() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => inspectionChecklistsService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection_checklists'] });
+    },
+  });
+}
+
+// Localization Languages Hooks
+export function useLocalizationLanguages() {
+  return useQuery({
+    queryKey: ['localization_languages'],
+    queryFn: () => localizationLanguagesService.getAll(),
+  });
+}
+
+export function useCreateLocalizationLanguage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (language: Partial<LocalizationLanguage>) => localizationLanguagesService.create(language),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_languages'] });
+    },
+  });
+}
+
+export function useUpdateLocalizationLanguage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<LocalizationLanguage> }) =>
+      localizationLanguagesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_languages'] });
+    },
+  });
+}
+
+export function useDeleteLocalizationLanguage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => localizationLanguagesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_languages'] });
+    },
+  });
+}
+
+// Localization Currencies Hooks
+export function useLocalizationCurrencies() {
+  return useQuery({
+    queryKey: ['localization_currencies'],
+    queryFn: () => localizationCurrenciesService.getAll(),
+  });
+}
+
+export function useCreateLocalizationCurrency() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (currency: Partial<LocalizationCurrency>) => localizationCurrenciesService.create(currency),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_currencies'] });
+    },
+  });
+}
+
+export function useUpdateLocalizationCurrency() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<LocalizationCurrency> }) =>
+      localizationCurrenciesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_currencies'] });
+    },
+  });
+}
+
+export function useDeleteLocalizationCurrency() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => localizationCurrenciesService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_currencies'] });
+    },
+  });
+}
+
+// Localization Date Formats Hooks
+export function useLocalizationDateFormats() {
+  return useQuery({
+    queryKey: ['localization_date_formats'],
+    queryFn: () => localizationDateFormatsService.getAll(),
+  });
+}
+
+export function useCreateLocalizationDateFormat() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dateFormat: Partial<LocalizationDateFormat>) => localizationDateFormatsService.create(dateFormat),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_date_formats'] });
+    },
+  });
+}
+
+export function useUpdateLocalizationDateFormat() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<LocalizationDateFormat> }) =>
+      localizationDateFormatsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_date_formats'] });
+    },
+  });
+}
+
+export function useDeleteLocalizationDateFormat() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => localizationDateFormatsService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['localization_date_formats'] });
     },
   });
 }

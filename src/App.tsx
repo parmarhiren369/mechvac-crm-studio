@@ -20,6 +20,20 @@ import StaffPage from "./pages/StaffPage";
 import ProductsPage from "./pages/ProductsPage";
 import ServicesPage from "./pages/ServicesPage";
 import SettingsProfilePage from "./pages/SettingsProfilePage";
+import SettingsPreferencesPage from "./pages/SettingsPreferencesPage";
+import SettingsRolesPage from "./pages/SettingsRolesPage";
+import SettingsWorkspacesPage from "./pages/SettingsWorkspacesPage";
+import SettingsLeadSourcesPage from "./pages/SettingsLeadSourcesPage";
+import SettingsLeadStatusPage from "./pages/SettingsLeadStatusPage";
+import SettingsCustomFieldsPage from "./pages/SettingsCustomFieldsPage";
+import SettingsFieldGroupsPage from "./pages/SettingsFieldGroupsPage";
+import SettingsInspectionTemplatesPage from "./pages/SettingsInspectionTemplatesPage";
+import SettingsInspectionChecklistsPage from "./pages/SettingsInspectionChecklistsPage";
+import SettingsLocalizationLanguagesPage from "./pages/SettingsLocalizationLanguagesPage";
+import SettingsLocalizationCurrencyPage from "./pages/SettingsLocalizationCurrencyPage";
+import SettingsLocalizationDateFormatPage from "./pages/SettingsLocalizationDateFormatPage";
+import ReportsSalesPage from "./pages/ReportsSalesPage";
+import ReportsLeadsPage from "./pages/ReportsLeadsPage";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +69,8 @@ const App = () => (
                 <Route path="/companies" element={<CompaniesPage />} />
                 <Route path="/orders" element={<OrdersPage />} />
                 <Route path="/orders/pending" element={<OrdersPage />} />
+                <Route path="/reports/sales" element={<ReportsSalesPage />} />
+                <Route path="/reports/leads" element={<ReportsLeadsPage />} />
                 <Route path="/tasks" element={<TasksPage />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/spares" element={<ProductsPage />} />
@@ -62,6 +78,18 @@ const App = () => (
                 <Route path="/staff" element={<StaffPage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
                 <Route path="/settings/profile" element={<SettingsProfilePage />} />
+                <Route path="/settings/preferences" element={<SettingsPreferencesPage />} />
+                <Route path="/settings/roles" element={<SettingsRolesPage />} />
+                <Route path="/settings/workspaces" element={<SettingsWorkspacesPage />} />
+                <Route path="/settings/leads/sources" element={<SettingsLeadSourcesPage />} />
+                <Route path="/settings/leads/status" element={<SettingsLeadStatusPage />} />
+                <Route path="/settings/fields/custom" element={<SettingsCustomFieldsPage />} />
+                <Route path="/settings/fields/groups" element={<SettingsFieldGroupsPage />} />
+                <Route path="/settings/inspection/templates" element={<SettingsInspectionTemplatesPage />} />
+                <Route path="/settings/inspection/checklists" element={<SettingsInspectionChecklistsPage />} />
+                <Route path="/settings/localization/languages" element={<SettingsLocalizationLanguagesPage />} />
+                <Route path="/settings/localization/currency" element={<SettingsLocalizationCurrencyPage />} />
+                <Route path="/settings/localization/date-format" element={<SettingsLocalizationDateFormatPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

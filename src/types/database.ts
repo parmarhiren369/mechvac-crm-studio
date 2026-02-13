@@ -63,6 +63,66 @@ export interface Database {
         Insert: Omit<Enquiry, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<Enquiry, 'id' | 'created_at'>>;
       };
+      roles: {
+        Row: Role;
+        Insert: Omit<Role, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Role, 'id' | 'created_at'>>;
+      };
+      workspaces: {
+        Row: Workspace;
+        Insert: Omit<Workspace, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Workspace, 'id' | 'created_at'>>;
+      };
+      preferences: {
+        Row: Preference;
+        Insert: Omit<Preference, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Preference, 'id' | 'created_at'>>;
+      };
+      lead_sources: {
+        Row: LeadSource;
+        Insert: Omit<LeadSource, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<LeadSource, 'id' | 'created_at'>>;
+      };
+      lead_statuses: {
+        Row: LeadStatus;
+        Insert: Omit<LeadStatus, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<LeadStatus, 'id' | 'created_at'>>;
+      };
+      field_groups: {
+        Row: FieldGroup;
+        Insert: Omit<FieldGroup, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FieldGroup, 'id' | 'created_at'>>;
+      };
+      custom_fields: {
+        Row: CustomField;
+        Insert: Omit<CustomField, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<CustomField, 'id' | 'created_at'>>;
+      };
+      inspection_templates: {
+        Row: InspectionTemplate;
+        Insert: Omit<InspectionTemplate, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<InspectionTemplate, 'id' | 'created_at'>>;
+      };
+      inspection_checklists: {
+        Row: InspectionChecklist;
+        Insert: Omit<InspectionChecklist, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<InspectionChecklist, 'id' | 'created_at'>>;
+      };
+      localization_languages: {
+        Row: LocalizationLanguage;
+        Insert: Omit<LocalizationLanguage, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<LocalizationLanguage, 'id' | 'created_at'>>;
+      };
+      localization_currencies: {
+        Row: LocalizationCurrency;
+        Insert: Omit<LocalizationCurrency, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<LocalizationCurrency, 'id' | 'created_at'>>;
+      };
+      localization_date_formats: {
+        Row: LocalizationDateFormat;
+        Insert: Omit<LocalizationDateFormat, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<LocalizationDateFormat, 'id' | 'created_at'>>;
+      };
     };
   };
 }
@@ -245,6 +305,131 @@ export interface Enquiry {
   status?: string;
   priority?: string;
   assigned_to?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Role {
+  id: number;
+  name: string;
+  description?: string;
+  permissions?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Workspace {
+  id: number;
+  name: string;
+  slug?: string;
+  timezone?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Preference {
+  id: number;
+  key: string;
+  value?: string;
+  description?: string;
+  scope?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LeadSource {
+  id: number;
+  name: string;
+  description?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LeadStatus {
+  id: number;
+  name: string;
+  color?: string;
+  stage_order?: number;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldGroup {
+  id: number;
+  entity: string;
+  name: string;
+  description?: string;
+  sort_order?: number;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CustomField {
+  id: number;
+  entity: string;
+  label: string;
+  field_key: string;
+  field_type: string;
+  is_required?: boolean;
+  options?: string;
+  group_id?: number;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface InspectionTemplate {
+  id: number;
+  name: string;
+  description?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface InspectionChecklist {
+  id: number;
+  template_id?: number;
+  title: string;
+  items?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LocalizationLanguage {
+  id: number;
+  name: string;
+  code: string;
+  is_default?: boolean;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LocalizationCurrency {
+  id: number;
+  name: string;
+  code: string;
+  symbol?: string;
+  is_default?: boolean;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LocalizationDateFormat {
+  id: number;
+  label: string;
+  format: string;
+  is_default?: boolean;
+  status?: string;
   created_at?: string;
   updated_at?: string;
 }

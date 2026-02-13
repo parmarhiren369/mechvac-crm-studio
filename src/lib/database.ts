@@ -2,7 +2,10 @@ import { supabase } from './supabase';
 import type { 
   Lead, Client, Quotation, Order, Product, 
   Service, Task, User, CalendarEvent, Contact, 
-  Project, Enquiry 
+  Project, Enquiry, Role, Workspace, Preference,
+  LeadSource, LeadStatus, FieldGroup, CustomField,
+  InspectionTemplate, InspectionChecklist,
+  LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat
 } from '@/types/database';
 
 // Generic CRUD operations
@@ -314,4 +317,101 @@ export const enquiriesService = {
     if (error) throw error;
     return data as Enquiry[];
   },
+};
+
+// Settings Services
+export const rolesService = {
+  getAll: () => getAll<Role>('roles'),
+  getById: (id: number) => getById<Role>('roles', id),
+  create: (role: Partial<Role>) => create<Role>('roles', role),
+  update: (id: number, role: Partial<Role>) => update<Role>('roles', id, role),
+  delete: (id: number) => remove('roles', id),
+};
+
+export const workspacesService = {
+  getAll: () => getAll<Workspace>('workspaces'),
+  getById: (id: number) => getById<Workspace>('workspaces', id),
+  create: (workspace: Partial<Workspace>) => create<Workspace>('workspaces', workspace),
+  update: (id: number, workspace: Partial<Workspace>) => update<Workspace>('workspaces', id, workspace),
+  delete: (id: number) => remove('workspaces', id),
+};
+
+export const preferencesService = {
+  getAll: () => getAll<Preference>('preferences'),
+  getById: (id: number) => getById<Preference>('preferences', id),
+  create: (preference: Partial<Preference>) => create<Preference>('preferences', preference),
+  update: (id: number, preference: Partial<Preference>) => update<Preference>('preferences', id, preference),
+  delete: (id: number) => remove('preferences', id),
+};
+
+export const leadSourcesService = {
+  getAll: () => getAll<LeadSource>('lead_sources'),
+  getById: (id: number) => getById<LeadSource>('lead_sources', id),
+  create: (source: Partial<LeadSource>) => create<LeadSource>('lead_sources', source),
+  update: (id: number, source: Partial<LeadSource>) => update<LeadSource>('lead_sources', id, source),
+  delete: (id: number) => remove('lead_sources', id),
+};
+
+export const leadStatusesService = {
+  getAll: () => getAll<LeadStatus>('lead_statuses'),
+  getById: (id: number) => getById<LeadStatus>('lead_statuses', id),
+  create: (status: Partial<LeadStatus>) => create<LeadStatus>('lead_statuses', status),
+  update: (id: number, status: Partial<LeadStatus>) => update<LeadStatus>('lead_statuses', id, status),
+  delete: (id: number) => remove('lead_statuses', id),
+};
+
+export const fieldGroupsService = {
+  getAll: () => getAll<FieldGroup>('field_groups'),
+  getById: (id: number) => getById<FieldGroup>('field_groups', id),
+  create: (group: Partial<FieldGroup>) => create<FieldGroup>('field_groups', group),
+  update: (id: number, group: Partial<FieldGroup>) => update<FieldGroup>('field_groups', id, group),
+  delete: (id: number) => remove('field_groups', id),
+};
+
+export const customFieldsService = {
+  getAll: () => getAll<CustomField>('custom_fields'),
+  getById: (id: number) => getById<CustomField>('custom_fields', id),
+  create: (field: Partial<CustomField>) => create<CustomField>('custom_fields', field),
+  update: (id: number, field: Partial<CustomField>) => update<CustomField>('custom_fields', id, field),
+  delete: (id: number) => remove('custom_fields', id),
+};
+
+export const inspectionTemplatesService = {
+  getAll: () => getAll<InspectionTemplate>('inspection_templates'),
+  getById: (id: number) => getById<InspectionTemplate>('inspection_templates', id),
+  create: (template: Partial<InspectionTemplate>) => create<InspectionTemplate>('inspection_templates', template),
+  update: (id: number, template: Partial<InspectionTemplate>) => update<InspectionTemplate>('inspection_templates', id, template),
+  delete: (id: number) => remove('inspection_templates', id),
+};
+
+export const inspectionChecklistsService = {
+  getAll: () => getAll<InspectionChecklist>('inspection_checklists'),
+  getById: (id: number) => getById<InspectionChecklist>('inspection_checklists', id),
+  create: (checklist: Partial<InspectionChecklist>) => create<InspectionChecklist>('inspection_checklists', checklist),
+  update: (id: number, checklist: Partial<InspectionChecklist>) => update<InspectionChecklist>('inspection_checklists', id, checklist),
+  delete: (id: number) => remove('inspection_checklists', id),
+};
+
+export const localizationLanguagesService = {
+  getAll: () => getAll<LocalizationLanguage>('localization_languages'),
+  getById: (id: number) => getById<LocalizationLanguage>('localization_languages', id),
+  create: (language: Partial<LocalizationLanguage>) => create<LocalizationLanguage>('localization_languages', language),
+  update: (id: number, language: Partial<LocalizationLanguage>) => update<LocalizationLanguage>('localization_languages', id, language),
+  delete: (id: number) => remove('localization_languages', id),
+};
+
+export const localizationCurrenciesService = {
+  getAll: () => getAll<LocalizationCurrency>('localization_currencies'),
+  getById: (id: number) => getById<LocalizationCurrency>('localization_currencies', id),
+  create: (currency: Partial<LocalizationCurrency>) => create<LocalizationCurrency>('localization_currencies', currency),
+  update: (id: number, currency: Partial<LocalizationCurrency>) => update<LocalizationCurrency>('localization_currencies', id, currency),
+  delete: (id: number) => remove('localization_currencies', id),
+};
+
+export const localizationDateFormatsService = {
+  getAll: () => getAll<LocalizationDateFormat>('localization_date_formats'),
+  getById: (id: number) => getById<LocalizationDateFormat>('localization_date_formats', id),
+  create: (dateFormat: Partial<LocalizationDateFormat>) => create<LocalizationDateFormat>('localization_date_formats', dateFormat),
+  update: (id: number, dateFormat: Partial<LocalizationDateFormat>) => update<LocalizationDateFormat>('localization_date_formats', id, dateFormat),
+  delete: (id: number) => remove('localization_date_formats', id),
 };
