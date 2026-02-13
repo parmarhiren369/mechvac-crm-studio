@@ -143,6 +143,21 @@ export interface Database {
         Insert: Omit<InspectionChecklist, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<InspectionChecklist, 'id' | 'created_at'>>;
       };
+      countries: {
+        Row: Country;
+        Insert: Omit<Country, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Country, 'id' | 'created_at'>>;
+      };
+      states: {
+        Row: State;
+        Insert: Omit<State, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<State, 'id' | 'created_at'>>;
+      };
+      cities: {
+        Row: City;
+        Insert: Omit<City, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<City, 'id' | 'created_at'>>;
+      };
       localization_languages: {
         Row: LocalizationLanguage;
         Insert: Omit<LocalizationLanguage, 'id' | 'created_at' | 'updated_at'>;
@@ -534,6 +549,32 @@ export interface InspectionChecklist {
   template_id?: number;
   title: string;
   items?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Country {
+  id: number;
+  name: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface State {
+  id: number;
+  country_id?: number;
+  name: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface City {
+  id: number;
+  state_id?: number;
+  name: string;
   status?: string;
   created_at?: string;
   updated_at?: string;

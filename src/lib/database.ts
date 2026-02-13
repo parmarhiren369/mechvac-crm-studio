@@ -7,6 +7,7 @@ import type {
   FieldPosition, FieldDepartment, FieldIndustry, FieldPumpType,
   FieldManufacturer, FieldUnit, FieldPumpModel,
   InspectionTemplate, InspectionChecklist,
+  Country, State, City,
   LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat,
   CompanySettings
 } from '@/types/database';
@@ -449,6 +450,48 @@ export const inspectionChecklistsService = {
   create: (checklist: Partial<InspectionChecklist>) => create<InspectionChecklist>('inspection_checklists', checklist),
   update: (id: number, checklist: Partial<InspectionChecklist>) => update<InspectionChecklist>('inspection_checklists', id, checklist),
   delete: (id: number) => remove('inspection_checklists', id),
+};
+
+export const countriesService = {
+  getAll: () => getAll<Country>('countries'),
+  getById: (id: number) => getById<Country>('countries', id),
+  create: (country: Partial<Country>) => create<Country>('countries', country),
+  update: (id: number, country: Partial<Country>) => update<Country>('countries', id, country),
+  delete: (id: number) => remove('countries', id),
+};
+
+export const statesService = {
+  getAll: () => getAll<State>('states'),
+  getById: (id: number) => getById<State>('states', id),
+  getByCountry: async (countryId: number) => {
+    const { data, error } = await supabase
+      .from('states')
+      .select('*')
+      .eq('country_id', countryId)
+      .order('name', { ascending: true });
+    if (error) throw error;
+    return data as State[];
+  },
+  create: (state: Partial<State>) => create<State>('states', state),
+  update: (id: number, state: Partial<State>) => update<State>('states', id, state),
+  delete: (id: number) => remove('states', id),
+};
+
+export const citiesService = {
+  getAll: () => getAll<City>('cities'),
+  getById: (id: number) => getById<City>('cities', id),
+  getByState: async (stateId: number) => {
+    const { data, error } = await supabase
+      .from('cities')
+      .select('*')
+      .eq('state_id', stateId)
+      .order('name', { ascending: true });
+    if (error) throw error;
+    return data as City[];
+  },
+  create: (city: Partial<City>) => create<City>('cities', city),
+  update: (id: number, city: Partial<City>) => update<City>('cities', id, city),
+  delete: (id: number) => remove('cities', id),
 };
 
 export const localizationLanguagesService = {

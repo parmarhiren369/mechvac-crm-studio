@@ -38,6 +38,14 @@ import SettingsLocalizationCurrencyPage from "./pages/SettingsLocalizationCurren
 import SettingsLocalizationDateFormatPage from "./pages/SettingsLocalizationDateFormatPage";
 import ReportsSalesPage from "./pages/ReportsSalesPage";
 import ReportsLeadsPage from "./pages/ReportsLeadsPage";
+import PositionsPage from "./pages/PositionsPage";
+import CreatePositionPage from "./pages/CreatePositionPage";
+import CountriesPage from "./pages/CountriesPage";
+import CreateCountryPage from "./pages/CreateCountryPage";
+import StatesPage from "./pages/StatesPage";
+import CreateStatePage from "./pages/CreateStatePage";
+import CitiesPage from "./pages/CitiesPage";
+import CreateCityPage from "./pages/CreateCityPage";
 
 const queryClient = new QueryClient();
 
