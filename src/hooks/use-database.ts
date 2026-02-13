@@ -7,14 +7,16 @@ import {
   leadSourcesService, leadStatusesService,
   fieldGroupsService, customFieldsService,
   inspectionTemplatesService, inspectionChecklistsService,
-  localizationLanguagesService, localizationCurrenciesService, localizationDateFormatsService
+  localizationLanguagesService, localizationCurrenciesService, localizationDateFormatsService,
+  companySettingsService
 } from '@/lib/database';
 import type { 
   Lead, Client, Quotation, Order, Product, Service, 
   Task, User, CalendarEvent, Contact, Project, Enquiry,
   Role, Workspace, Preference, LeadSource, LeadStatus,
   FieldGroup, CustomField, InspectionTemplate, InspectionChecklist,
-  LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat
+  LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat,
+  CompanySettings
 } from '@/types/database';
 
 // Leads Hooks
@@ -1045,6 +1047,24 @@ export function useDeleteLocalizationDateFormat() {
     mutationFn: (id: number) => localizationDateFormatsService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['localization_date_formats'] });
+    },
+  });
+}
+
+// Company Settings Hooks
+export function useCompanySettings() {
+  return useQuery({
+    queryKey: ['company_settings'],
+    queryFn: () => companySettingsService.getSettings(),
+  });
+}
+
+export function useUpdateCompanySettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (settings: Partial<CompanySettings>) => companySettingsService.updateSettings(settings),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['company_settings'] });
     },
   });
 }

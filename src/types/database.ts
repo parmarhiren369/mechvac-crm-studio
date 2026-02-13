@@ -123,6 +123,11 @@ export interface Database {
         Insert: Omit<LocalizationDateFormat, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<LocalizationDateFormat, 'id' | 'created_at'>>;
       };
+      company_settings: {
+        Row: CompanySettings;
+        Insert: Omit<CompanySettings, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<CompanySettings, 'id' | 'created_at'>>;
+      };
     };
   };
 }
@@ -309,11 +314,25 @@ export interface Enquiry {
   updated_at?: string;
 }
 
+export interface RolePermissions {
+  role?: string[];
+  lead?: string[];
+  staff?: string[];
+  services?: string[];
+  quotation?: string[];
+  order?: string[];
+  product?: string[];
+  company?: string[];
+  task?: string[];
+  calendar?: string[];
+  report?: string[];
+}
+
 export interface Role {
   id: number;
   name: string;
   description?: string;
-  permissions?: string;
+  permissions?: RolePermissions;
   status?: string;
   created_at?: string;
   updated_at?: string;
@@ -430,6 +449,27 @@ export interface LocalizationDateFormat {
   format: string;
   is_default?: boolean;
   status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CompanySettings {
+  id: number;
+  name?: string;
+  about?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  zip_code?: string;
+  province_state?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  company_logo_url?: string;
+  company_logo_small_url?: string;
+  company_icon_url?: string;
   created_at?: string;
   updated_at?: string;
 }

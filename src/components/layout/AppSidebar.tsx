@@ -15,6 +15,7 @@ import {
   Settings,
   Shield,
   Briefcase,
+  Globe,
   ChevronDown,
   ChevronRight,
   Menu,
@@ -76,14 +77,13 @@ const settingsItems: MenuItem[] = [
     title: "General",
     icon: Settings,
     children: [
-      { title: "Profile", path: "/settings/profile" },
-      { title: "Preferences", path: "/settings/preferences" },
+      { title: "App Settings", path: "/settings/app" },
     ],
   },
-  { title: "Roles", icon: Shield, path: "/settings/roles" },
-  { title: "Workspaces", icon: Briefcase, path: "/settings/workspaces" },
+  { title: "Roles", icon: Shield, path: "/roles" },
+  { title: "Workspaces", icon: Briefcase, path: "/workspaces" },
   {
-    title: "Leads Settings",
+    title: "Leads",
     icon: Users,
     children: [
       { title: "Lead Sources", path: "/settings/leads/sources" },
@@ -98,17 +98,10 @@ const settingsItems: MenuItem[] = [
       { title: "Field Groups", path: "/settings/fields/groups" },
     ],
   },
-  {
-    title: "Inspection Reports",
-    icon: CheckSquare,
-    children: [
-      { title: "Templates", path: "/settings/inspection/templates" },
-      { title: "Checklists", path: "/settings/inspection/checklists" },
-    ],
-  },
+  { title: "Inspection Report Fields", icon: CheckSquare, path: "/settings/inspection" },
   {
     title: "Localization",
-    icon: Briefcase,
+    icon: Globe,
     children: [
       { title: "Languages", path: "/settings/localization/languages" },
       { title: "Currency", path: "/settings/localization/currency" },

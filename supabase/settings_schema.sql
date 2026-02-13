@@ -4,7 +4,7 @@ create table if not exists roles (
   id bigserial primary key,
   name text not null,
   description text,
-  permissions text,
+  permissions jsonb default '{}'::jsonb,
   status text default 'active',
   created_at timestamptz default now(),
   updated_at timestamptz default now()

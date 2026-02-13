@@ -5,7 +5,8 @@ import type {
   Project, Enquiry, Role, Workspace, Preference,
   LeadSource, LeadStatus, FieldGroup, CustomField,
   InspectionTemplate, InspectionChecklist,
-  LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat
+  LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat,
+  CompanySettings
 } from '@/types/database';
 
 // Generic CRUD operations
@@ -414,4 +415,44 @@ export const localizationDateFormatsService = {
   create: (dateFormat: Partial<LocalizationDateFormat>) => create<LocalizationDateFormat>('localization_date_formats', dateFormat),
   update: (id: number, dateFormat: Partial<LocalizationDateFormat>) => update<LocalizationDateFormat>('localization_date_formats', id, dateFormat),
   delete: (id: number) => remove('localization_date_formats', id),
+};
+
+// Company Settings Service
+export const companySettingsService = {
+  getSettings: async () => {
+    const { data, error } = await supabase
+      .from('company_settings')
+      .select('*')
+      .limit(1)
+      .single();
+    if (error) throw error;
+    return data as CompanySettings;
+  },
+  updateSettings: async (settings: Partial<CompanySettings>) => {
+    // Always update the first (and only) record
+    const { data: existing } = await supabase
+      .from('company_settings')
+      .select('id')
+      .limit(1)
+      .single();
+    
+    if (existing) {
+      const { data, error } = await supabase
+        .from('company_settings')
+        .update(settings)
+        .eq('id', existing.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as CompanySettings;
+    } else {
+      const { data, error } = await supabase
+        .from('company_settings')
+        .insert(settings)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as CompanySettings;
+    }
+  },
 };

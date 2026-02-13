@@ -20,8 +20,10 @@ import StaffPage from "./pages/StaffPage";
 import ProductsPage from "./pages/ProductsPage";
 import ServicesPage from "./pages/ServicesPage";
 import SettingsProfilePage from "./pages/SettingsProfilePage";
+import AppSettingsPage from "./pages/AppSettingsPage";
 import SettingsPreferencesPage from "./pages/SettingsPreferencesPage";
-import SettingsRolesPage from "./pages/SettingsRolesPage";
+import RolesPage from "./pages/RolesPage";
+import CreateRolePage from "./pages/CreateRolePage";
 import SettingsWorkspacesPage from "./pages/SettingsWorkspacesPage";
 import SettingsLeadSourcesPage from "./pages/SettingsLeadSourcesPage";
 import SettingsLeadStatusPage from "./pages/SettingsLeadStatusPage";
@@ -77,9 +79,12 @@ const App = () => (
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/staff" element={<StaffPage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/settings/app" element={<AppSettingsPage />} />
                 <Route path="/settings/profile" element={<SettingsProfilePage />} />
                 <Route path="/settings/preferences" element={<SettingsPreferencesPage />} />
-                <Route path="/settings/roles" element={<SettingsRolesPage />} />
+                <Route path="/roles" element={<RolesPage />} />
+                <Route path="/roles/create" element={<CreateRolePage />} />
+                <Route path="/roles/edit/:id" element={<CreateRolePage />} />
                 <Route path="/settings/workspaces" element={<SettingsWorkspacesPage />} />
                 <Route path="/settings/leads/sources" element={<SettingsLeadSourcesPage />} />
                 <Route path="/settings/leads/status" element={<SettingsLeadStatusPage />} />
