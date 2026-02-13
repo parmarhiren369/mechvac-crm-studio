@@ -42,6 +42,8 @@ import PositionsPage from "./pages/PositionsPage";
 import CreatePositionPage from "./pages/CreatePositionPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
 import CreateDepartmentPage from "./pages/CreateDepartmentPage";
+import IndustriesPage from "./pages/IndustriesPage";
+import CreateIndustryPage from "./pages/CreateIndustryPage";
 import CountriesPage from "./pages/CountriesPage";
 import CreateCountryPage from "./pages/CreateCountryPage";
 import StatesPage from "./pages/StatesPage";
@@ -112,6 +114,9 @@ const App = () => (
                 <Route path="/settings/fields/departments" element={<DepartmentsPage />} />
                 <Route path="/settings/fields/departments/create" element={<CreateDepartmentPage />} />
                 <Route path="/settings/fields/departments/edit/:id" element={<CreateDepartmentPage />} />
+                <Route path="/settings/fields/industries" element={<IndustriesPage />} />
+                <Route path="/settings/fields/industries/create" element={<CreateIndustryPage />} />
+                <Route path="/settings/fields/industries/edit/:id" element={<CreateIndustryPage />} />
                 <Route path="/settings/inspection/templates" element={<SettingsInspectionTemplatesPage />} />
                 <Route path="/settings/inspection/checklists" element={<SettingsInspectionChecklistsPage />} />
                 <Route path="/settings/localization/languages" element={<SettingsLocalizationLanguagesPage />} />
