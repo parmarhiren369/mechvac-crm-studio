@@ -138,7 +138,7 @@ export default function CreateRolePage() {
     };
 
     if (isEditMode && id) {
-      await updateMutation.mutateAsync({ id: Number(id), updates: data });
+      await updateMutation.mutateAsync({ id: Number(id), data });
     } else {
       await createMutation.mutateAsync(data);
     }

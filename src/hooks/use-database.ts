@@ -591,6 +591,14 @@ export function useRoles() {
   });
 }
 
+export function useRole(id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['roles', id],
+    queryFn: () => rolesService.getById(id),
+    enabled: options?.enabled ?? true,
+  });
+}
+
 export function useCreateRole() {
   const queryClient = useQueryClient();
   return useMutation({
