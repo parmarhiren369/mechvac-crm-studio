@@ -7,6 +7,7 @@ import {
   leadSourcesService, leadStatusesService,
   fieldGroupsService, customFieldsService,
   inspectionTemplatesService, inspectionChecklistsService,
+  pumpModelsService,
   localizationLanguagesService, localizationCurrenciesService, localizationDateFormatsService,
   companySettingsService
 } from '@/lib/database';
@@ -15,6 +16,7 @@ import type {
   Task, User, CalendarEvent, Contact, Project, Enquiry,
   Role, Workspace, Preference, LeadSource, LeadStatus,
   FieldGroup, CustomField, InspectionTemplate, InspectionChecklist,
+  PumpModel,
   LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat,
   CompanySettings
 } from '@/types/database';
@@ -1089,6 +1091,66 @@ export function useUpdateCompanySettings() {
     mutationFn: (settings: Partial<CompanySettings>) => companySettingsService.updateSettings(settings),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['company_settings'] });
+    },
+  });
+}
+
+// Pump Models Hooks
+export function usePumpModels() {
+  return useQuery({
+    queryKey: ['pump_models'],
+    queryFn: () => pumpModelsService.getAll(),
+  });
+}
+
+export function usePumpModel(id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['pump_models', id],
+    queryFn: () => pumpModelsService.getById(id),
+    ...options,
+  });
+}
+
+export function usePumpModelsByOem(oemId: number) {
+  return useQuery({
+    queryKey: ['pump_models', 'oem', oemId],
+    queryFn: () => pumpModelsService.getByOem(oemId),
+  });
+}
+
+export function usePumpModelsByPumpType(pumpTypeId: number) {
+  return useQuery({
+    queryKey: ['pump_models', 'pump_type', pumpTypeId],
+    queryFn: () => pumpModelsService.getByPumpType(pumpTypeId),
+  });
+}
+
+export function useCreatePumpModel() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (pumpModel: Partial<PumpModel>) => pumpModelsService.create(pumpModel),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pump_models'] });
+    },
+  });
+}
+
+export function useUpdatePumpModel() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<PumpModel> }) => pumpModelsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pump_models'] });
+    },
+  });
+}
+
+export function useDeletePumpModel() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => pumpModelsService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pump_models'] });
     },
   });
 }

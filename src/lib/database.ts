@@ -7,7 +7,7 @@ import type {
   FieldPosition, FieldDepartment, FieldIndustry, FieldPumpType,
   FieldManufacturer, FieldUnit, FieldPumpModel,
   InspectionTemplate, InspectionChecklist,
-  Country, State, City,
+  Country, State, City, PumpModel,
   LocalizationLanguage, LocalizationCurrency, LocalizationDateFormat,
   CompanySettings
 } from '@/types/database';
@@ -492,6 +492,32 @@ export const citiesService = {
   create: (city: Partial<City>) => create<City>('cities', city),
   update: (id: number, city: Partial<City>) => update<City>('cities', id, city),
   delete: (id: number) => remove('cities', id),
+};
+
+export const pumpModelsService = {
+  getAll: () => getAll<PumpModel>('pump_models'),
+  getById: (id: number) => getById<PumpModel>('pump_models', id),
+  getByOem: async (oemId: number) => {
+    const { data, error } = await supabase
+      .from('pump_models')
+      .select('*')
+      .eq('oem_id', oemId)
+      .order('model_no', { ascending: true });
+    if (error) throw error;
+    return data as PumpModel[];
+  },
+  getByPumpType: async (pumpTypeId: number) => {
+    const { data, error } = await supabase
+      .from('pump_models')
+      .select('*')
+      .eq('pump_type_id', pumpTypeId)
+      .order('model_no', { ascending: true });
+    if (error) throw error;
+    return data as PumpModel[];
+  },
+  create: (pumpModel: Partial<PumpModel>) => create<PumpModel>('pump_models', pumpModel),
+  update: (id: number, pumpModel: Partial<PumpModel>) => update<PumpModel>('pump_models', id, pumpModel),
+  delete: (id: number) => remove('pump_models', id),
 };
 
 export const localizationLanguagesService = {

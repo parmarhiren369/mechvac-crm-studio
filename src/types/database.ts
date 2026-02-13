@@ -158,6 +158,11 @@ export interface Database {
         Insert: Omit<City, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<City, 'id' | 'created_at'>>;
       };
+      pump_models: {
+        Row: PumpModel;
+        Insert: Omit<PumpModel, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<PumpModel, 'id' | 'created_at'>>;
+      };
       localization_languages: {
         Row: LocalizationLanguage;
         Insert: Omit<LocalizationLanguage, 'id' | 'created_at' | 'updated_at'>;
@@ -575,6 +580,17 @@ export interface City {
   id: number;
   state_id?: number;
   name: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface PumpModel {
+  id: number;
+  oem_id?: number;
+  pump_type_id?: number;
+  model_no: string;
+  model_qty?: number;
   status?: string;
   created_at?: string;
   updated_at?: string;

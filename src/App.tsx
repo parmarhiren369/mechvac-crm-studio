@@ -136,7 +136,8 @@ const App = () => (
                 <Route path="/settings/fields/units/edit/:id" element={<CreateUnitPage />} />
                 <Route path="/settings/fields/pump-models" element={<PumpModelsPage />} />
                 <Route path="/settings/fields/pump-models/create" element={<CreatePumpModelPage />} />
-                <Route path="/settings/fields/pump-models/edit/:id" element={<CreatePumpModelPage />} />
+                <Route path="/settings/fields/pump-models/view/:oemId/:pumpTypeId" element={<CreatePumpModelPage />} />
+                <Route path="/settings/fields/pump-models/edit/:oemId/:pumpTypeId" element={<CreatePumpModelPage />} />
                 <Route path="/settings/inspection/templates" element={<SettingsInspectionTemplatesPage />} />
                 <Route path="/settings/inspection/checklists" element={<SettingsInspectionChecklistsPage />} />
                 <Route path="/settings/localization/languages" element={<SettingsLocalizationLanguagesPage />} />
