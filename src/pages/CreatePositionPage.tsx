@@ -1,4 +1,4 @@
-import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
+import SimpleCreateFieldPage from "@/components/fields/SimpleCreateFieldPage";
 import {
   useFieldPosition,
   useCreateFieldPosition,
@@ -10,7 +10,7 @@ export default function CreatePositionPage() {
   const updateMutation = useUpdateFieldPosition();
 
   return (
-    <GenericCreateFieldPage
+    <SimpleCreateFieldPage
       title="CREATE"
       fieldType="Position/Designation"
       basePath="/settings/fields/positions"

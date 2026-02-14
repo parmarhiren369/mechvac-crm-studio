@@ -1,4 +1,4 @@
-import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
+import SimpleCreateFieldPage from "@/components/fields/SimpleCreateFieldPage";
 import {
   useFieldIndustry,
   useCreateFieldIndustry,
@@ -10,7 +10,7 @@ export default function CreateIndustryPage() {
   const updateMutation = useUpdateFieldIndustry();
 
   return (
-    <GenericCreateFieldPage
+    <SimpleCreateFieldPage
       title="CREATE"
       fieldType="Industry"
       basePath="/settings/fields/industries"

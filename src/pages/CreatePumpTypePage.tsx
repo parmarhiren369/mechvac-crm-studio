@@ -1,4 +1,4 @@
-import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
+import SimpleCreateFieldPage from "@/components/fields/SimpleCreateFieldPage";
 import {
   useFieldPumpType,
   useCreateFieldPumpType,
@@ -10,7 +10,7 @@ export default function CreatePumpTypePage() {
   const updateMutation = useUpdateFieldPumpType();
 
   return (
-    <GenericCreateFieldPage
+    <SimpleCreateFieldPage
       title="CREATE"
       fieldType="Pump Type"
       basePath="/settings/fields/pump-types"

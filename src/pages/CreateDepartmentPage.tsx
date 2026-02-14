@@ -1,4 +1,4 @@
-import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
+import SimpleCreateFieldPage from "@/components/fields/SimpleCreateFieldPage";
 import {
   useFieldDepartment,
   useCreateFieldDepartment,
@@ -10,7 +10,7 @@ export default function CreateDepartmentPage() {
   const updateMutation = useUpdateFieldDepartment();
 
   return (
-    <GenericCreateFieldPage
+    <SimpleCreateFieldPage
       title="CREATE"
       fieldType="Department"
       basePath="/settings/fields/departments"

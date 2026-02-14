@@ -1,4 +1,4 @@
-import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
+import SimpleCreateFieldPage from "@/components/fields/SimpleCreateFieldPage";
 import {
   useFieldUnit,
   useCreateFieldUnit,
@@ -10,7 +10,7 @@ export default function CreateUnitPage() {
   const updateMutation = useUpdateFieldUnit();
 
   return (
-    <GenericCreateFieldPage
+    <SimpleCreateFieldPage
       title="CREATE"
       fieldType="Unit"
       basePath="/settings/fields/units"

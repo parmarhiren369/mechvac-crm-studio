@@ -1,4 +1,4 @@
-import GenericCreateFieldPage from "@/components/fields/GenericCreateFieldPage";
+import SimpleCreateFieldPage from "@/components/fields/SimpleCreateFieldPage";
 import {
   useFieldManufacturer,
   useCreateFieldManufacturer,
@@ -10,7 +10,7 @@ export default function CreateManufacturerPage() {
   const updateMutation = useUpdateFieldManufacturer();
 
   return (
-    <GenericCreateFieldPage
+    <SimpleCreateFieldPage
       title="CREATE"
       fieldType="Manufacturer (OEM)"
       basePath="/settings/fields/manufacturers"
